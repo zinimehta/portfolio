@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case Study — Formalizing the Compliance Content Audit Process</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14181D;
+    --ink-soft: #1E242B;
+    --paper: #ECE9DF;
+    --paper-dim: #DFDBCC;
+    --brass: #A9812E;
+    --brass-soft: #C9A45E;
+    --ledger: #33564B;
+    --muted: #8B8676;
+    --muted-dark: #9AA0A6;
+    --line: #C9C3AF;
+    --line-dark: #3A414A;
+    --good: #4F7A5E;
+    --warn: #B4652C;
+    --bg: var(--ink);
+    --fg: var(--paper);
+    --panel: var(--ink-soft);
+    --panel-line: var(--line-dark);
+  }
+  :root:not([data-theme="light"]) {
+    --bg: var(--ink);
+    --fg: var(--paper);
+  }
+  :root[data-theme="light"] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --panel: #F4F2E9;
+    --panel-line: var(--line);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: var(--paper);
+      --fg: var(--ink);
+      --panel: #F4F2E9;
+      --panel-line: var(--line);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+  }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    line-height: 1.55;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  a { color: var(--brass-soft); }
+  img, svg { max-width: 100%; }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .wide {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- notice ---------- */
+  .notice {
+    background: var(--ink);
+    border-bottom: 1px solid var(--line-dark);
+    padding: 10px 0;
+  }
+  .notice p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted-dark);
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .notice strong { color: var(--brass-soft); font-weight: 500; }
+
+  /* ---------- hero ---------- */
+  header.hero {
+    background: var(--ink);
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .kicker {
+    font-size: 0.92rem;
+    color: var(--brass-soft);
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-size: clamp(2.1rem, 5vw, 3.15rem);
+    line-height: 1.12;
+    color: var(--paper);
+    max-width: 20ch;
+  }
+  .subtitle {
+    margin-top: 20px;
+    font-size: 1.12rem;
+    color: #C7C2B2;
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+  .meta-row {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    border-top: 1px solid var(--line-dark);
+    padding-top: 20px;
+  }
+  .meta-item { min-width: 140px; }
+  .meta-label {
+    font-size: 0.72rem;
+    color: var(--muted-dark);
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 0.95rem;
+    color: var(--paper);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--warn);
+    flex-shrink: 0;
+  }
+  .dot.good { background: var(--good); }
+
+  /* ---------- stat strip ---------- */
+  .stat-strip {
+    background: var(--ink-soft);
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-cell {
+    padding: 26px 20px;
+    border-right: 1px solid var(--line-dark);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Newsreader', serif;
+    font-size: 2rem;
+    color: var(--brass-soft);
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted-dark);
+    margin-top: 4px;
+  }
+  @media (max-width: 640px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-cell:nth-child(2) { border-right: none; }
+  }
+
+  /* ---------- sections on paper ---------- */
+  main {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  section.doc {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section.doc:last-child { border-bottom: none; }
+  .section-num {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  h2.head {
+    font-size: clamp(1.5rem, 3.2vw, 1.9rem);
+    color: var(--ink);
+    max-width: 26ch;
+  }
+  .lede {
+    margin-top: 16px;
+    font-size: 1.05rem;
+    color: #3A362C;
+    max-width: 62ch;
+  }
+  p.body-text {
+    margin: 16px 0 0;
+    color: #3A362C;
+    max-width: 62ch;
+    font-size: 0.98rem;
+  }
+  p.body-text + p.body-text { margin-top: 14px; }
+
+  ul.plain {
+    margin: 16px 0 0;
+    padding-left: 0;
+    list-style: none;
+    max-width: 62ch;
+  }
+  ul.plain li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: #3A362C;
+    font-size: 0.97rem;
+  }
+  ul.plain li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--brass);
+  }
+
+  /* ledger table */
+  .ledger-table {
+    margin-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ledger-row .k {
+    font-size: 0.86rem;
+    color: var(--ledger);
+    font-weight: 600;
+  }
+  .ledger-row .v {
+    font-size: 0.92rem;
+    color: #3A362C;
+  }
+  @media (max-width: 600px) {
+    .ledger-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* flow diagram */
+  .flow {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0;
+  }
+  .flow-box {
+    background: var(--panel);
+    color: var(--paper);
+    border: 1px solid var(--panel-line);
+    padding: 16px 18px;
+    font-size: 0.86rem;
+    flex: 1 1 150px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .flow-box.dim {
+    background: transparent;
+    color: #6B6558;
+    border-style: dashed;
+    border-color: var(--line);
+  }
+  .flow-box .tag {
+    font-size: 0.68rem;
+    text-transform: none;
+    color: var(--brass-soft);
+    margin-bottom: 6px;
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+  }
+  .flow-box.dim .tag { color: var(--muted); }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    flex: 0 0 auto;
+  }
+  @media (max-width: 700px) {
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); padding: 6px 0; }
+  }
+
+  /* guardrail grid */
+  .guard-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .guard-cell {
+    background: var(--paper);
+    padding: 16px 18px;
+    font-size: 0.88rem;
+    color: #3A362C;
+  }
+  .guard-cell b { color: var(--ledger); display: block; margin-bottom: 4px; font-size: 0.86rem; }
+  @media (max-width: 600px) {
+    .guard-grid { grid-template-columns: 1fr; }
+  }
+
+  /* progress */
+  .progress-block {
+    margin-top: 28px;
+    border: 1px solid var(--line);
+    padding: 22px;
+    background: #F4F2E9;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .progress-top .figure {
+    font-family: 'Newsreader', serif;
+    font-size: 1.7rem;
+    color: var(--warn);
+  }
+  .progress-top .target {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .bar-track {
+    height: 8px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--warn);
+    width: 85.3%;
+  }
+  .bar-fill.pass {
+    background: var(--good);
+    width: 96%;
+  }
+  .bar-target-mark {
+    position: absolute;
+    left: 95%;
+    top: -4px; bottom: -4px;
+    width: 2px;
+    background: var(--ledger);
+  }
+  .progress-caption {
+    margin-top: 12px;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .status-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.78rem;
+    color: var(--ledger);
+    border: 1px solid var(--ledger);
+    padding: 4px 10px;
+  }
+  .status-tag.pass {
+    color: var(--good);
+    border-color: var(--good);
+  }
+
+  /* impact estimate cards */
+  .impact-note {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--brass);
+    background: #F4F2E9;
+    font-size: 0.88rem;
+    color: #4A4536;
+    max-width: 62ch;
+  }
+  .impact-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .impact-card {
+    border: 1px solid var(--line);
+    padding: 18px;
+  }
+  .impact-card .num {
+    font-family: 'Newsreader', serif;
+    font-size: 1.6rem;
+    color: var(--ledger);
+  }
+  .impact-card .label {
+    font-size: 0.82rem;
+    color: #3A362C;
+    margin-top: 6px;
+  }
+  .impact-card .sub {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .impact-card.pending {
+    border-style: dashed;
+    background: transparent;
+  }
+  .impact-card.pending .num {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+  @media (max-width: 700px) {
+    .impact-grid { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 701px) and (max-width: 900px) {
+    .impact-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* phase timeline */
+  .phase-list {
+    margin-top: 26px;
+    max-width: 62ch;
+  }
+  .phase {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase:last-child { border-bottom: none; }
+  .phase-marker {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+  }
+  .phase-title { font-weight: 600; font-size: 0.94rem; color: var(--ink); }
+  .phase-desc { font-size: 0.88rem; color: #4A4536; margin-top: 2px; }
+  .phase-status {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .phase-status.active { border-color: var(--warn); color: var(--warn); }
+  .phase-status.done { border-color: var(--good); color: var(--good); }
+
+  /* footer */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 0 60px;
+  }
+  .tags {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border: 1px solid var(--line-dark);
+    color: #C7C2B2;
+  }
+  footer .close-note {
+    margin-top: 26px;
+    font-size: 0.85rem;
+    color: var(--muted-dark);
+    max-width: 60ch;
+  }
+
+  /* ---------- shared additions ---------- */
+  .fig-note { margin: 0; padding: 0 0 16px; font-size: 0.76rem; color: var(--muted-dark); font-style: italic; }
+  .stat-strip { padding-top: 0; }
+  p.pull { margin: 26px 0 0; padding-left: 20px; border-left: 3px solid var(--brass); font-family: 'Newsreader', serif; font-style: italic; font-size: 1.15rem; color: var(--ledger); max-width: 52ch; }
+  .closing { margin-top: 20px; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.25rem; color: var(--ink); max-width: 42ch; }
+  .caption { margin-top: 10px; font-size: 0.86rem; color: var(--muted); font-style: italic; max-width: 62ch; }
+  .compare-block { margin-top: 28px; border: 1px solid var(--line); padding: 24px; background: #F4F2E9; }
+  .compare-row { margin-bottom: 18px; }
+  .compare-row:last-of-type { margin-bottom: 0; }
+  .compare-top { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 6px; }
+  .compare-top .who { color: var(--muted); }
+  .compare-top .val { font-family: 'Newsreader', serif; font-size: 1.1rem; color: var(--ink); }
+  .compare-track { height: 10px; background: var(--line); position: relative; overflow: hidden; }
+  .compare-fill { position: absolute; left: 0; top: 0; bottom: 0; }
+  .compare-fill.before { background: var(--warn); width: 100%; }
+  .compare-fill.after { background: var(--good); width: 20%; }
+  .compare-caption { margin-top: 14px; font-size: 0.82rem; color: var(--muted); }
+  .snippet { margin-top: 14px; max-width: 62ch; padding: 16px 20px; border-left: 3px solid var(--warn); background: #F1E3D9; }
+  .snippet.after { border-left-color: var(--good); background: #E2EBDF; }
+  .snippet .tag { font-family: 'Newsreader', serif; font-style: italic; font-size: 0.85rem; color: var(--warn); margin-bottom: 6px; }
+  .snippet.after .tag { color: var(--good); }
+  .snippet .subj { font-style: italic; font-size: 0.9rem; margin-bottom: 6px; color: var(--ink); }
+  .snippet .body-text { font-size: 0.9rem; color: var(--ink); }
+  table.tbl { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 18px 0; }
+  table.tbl th, table.tbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; color: #3A362C; }
+  table.tbl th { font-size: 0.78rem; color: var(--ledger); font-weight: 600; }
+  .row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin: 26px 0; }
+  .row .txt { flex: 1 1 280px; }
+  .row.flip { flex-direction: row-reverse; }
+  .row h3 { font-size: 1.15rem; color: var(--ink); margin-bottom: 4px; }
+  .phone { width: 220px; height: 380px; border: 8px solid var(--ink); border-radius: 30px; background: #fff; color: #1b2230; padding: 16px 12px; font-size: 12px; line-height: 1.4; overflow: hidden; flex: none; margin-inline: auto; }
+  .phone .t { font-weight: 700; font-size: 15px; line-height: 1.2; margin: 6px 0 10px; }
+  .phone .b { border-radius: 8px; padding: 9px 10px; margin-bottom: 8px; border: 1px solid var(--line); background: #F4F2E9; }
+  .phone .promo { border-left: 4px solid var(--ledger); background: #F4F2E9; border-radius: 6px; padding: 9px 10px; margin-bottom: 10px; }
+  .phone .btn { background: var(--ledger); color: #fff; text-align: center; border-radius: 20px; padding: 9px; font-weight: 600; margin-top: 10px; }
+  .phone .ok { background: #e3f4ec; color: #14532d; } .phone .warn { background: #fdecc8; color: #6b4500; } .phone .info { background: #dcecf8; color: #0c3a5c; }
+  .cap { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 8px; width: 220px; }
+  footer h3 { font-size: 1.1rem; color: var(--paper); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="notice"><p><strong>Note:</strong> Company name, internal tool names, and colleague names have been anonymized to protect confidential information. The process, architecture, and scope of my role described below are accurate.</p></div>
+<header class="hero"><div class="wide">
+<div class="kicker">Case study — Process Design &amp; Governance</div>
+<h1 class="title">Formalizing the Compliance Content Audit Process</h1>
+<p class="subtitle">How an arbitrary, ad-hoc review habit became a risk-weighted, auditable framework covering an entire compliance knowledge base.</p>
+<div class="meta-row"><div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">Knowledge Management (KM) Lead</div></div><div class="meta-item"><div class="meta-label">Context</div><div class="meta-value">Compliance Operations · ~6 weeks to design, plus ongoing ownership</div></div><div class="meta-item"><div class="meta-label">Scope</div><div class="meta-value">Full compliance content library: help-center articles, narrative templates, email macros, internal procedures</div></div><div class="meta-item"><div class="meta-label">Status</div><div class="meta-value status-pill"><span class="dot good"></span>In operation · ongoing ownership</div></div></div>
+</div></header>
+<div class="stat-strip"><div class="wide"><div class="stat-grid"><div class="stat-cell"><div class="stat-num">100%</div><div class="stat-label">Library under a review cadence</div></div><div class="stat-cell"><div class="stat-num">34%→&lt;5%</div><div class="stat-label">Content unreviewed 18+ months</div></div><div class="stat-cell"><div class="stat-num">6 mo.</div><div class="stat-label">Max review window, top tier</div></div><div class="stat-cell"><div class="stat-num">1</div><div class="stat-label">Auditable tracker of record</div></div></div><p class="fig-note">Figures are illustrative, reconstructed post-project to represent directional impact.</p></div></div>
+<main>
+<section class="doc"><div class="wrap"><div class="section-num">One</div><h2 class="head">The problem</h2>
+    <p class="lede">The compliance knowledge base — covering areas like suspicious activity monitoring, enhanced due diligence, and screening — had grown organically over several years across multiple formats: help-center articles, narrative templates, email macros, and internal procedure docs. Content was reviewed arbitrarily: whoever happened to notice an outdated article would flag it, if anyone did. There was no defined cadence, no ownership model, and no way to prioritize what got reviewed first. This created real risk:</p>
+    <ul class="plain">
+      <li><strong>No audit trail.</strong> If a regulator or internal audit asked when an article was last verified accurate, there was no consistent answer.</li>
+      <li><strong>Stale content accumulated silently.</strong> Low-traffic articles could go years without review, some referencing retired tools or outdated policy.</li>
+      <li><strong>Uneven effort allocation.</strong> High-traffic, high-regulatory-risk content got the same inconsistent attention as rarely used pages — or less.</li>
+      <li><strong>No clear accountability.</strong> When an article was wrong, it wasn't obvious whose job it was to catch it.</li>
+    </ul>
+  </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Two</div><h2 class="head">Research &amp; diagnosis</h2>
+    <ul class="plain">
+      <li><strong>Inventoried the full content library</strong> across its sections and artifact types — help-center articles, narrative templates, email templates, internal procedures — to understand the true scope of what needed governing.</li>
+      <li><strong>Reviewed 12 months of ad-hoc audit history</strong> to identify patterns: which content types were reviewed regularly by luck, and which were essentially never touched.</li>
+      <li><strong>Found</strong> that an estimated 34% of articles hadn't been reviewed in over 18 months, with no record of why or by whom.</li>
+      <li><strong>Interviewed subject-matter experts and functional leads</strong> to understand what "risk" actually meant for their content areas, since no shared definition existed across teams.</li>
+    </ul>
+  </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Three</div><h2 class="head">Solution: a tiered, recurring audit framework</h2>
+    <p class="lede">Rather than proposing more review effort, I designed a framework that directed the same effort more deliberately — a formal Standard Operating Procedure built on three components:</p>
+    <ul class="plain">
+      <li><strong>Risk-based prioritization</strong> — every article is scored against traffic, regulatory risk, and staleness, then sorted into four tiers — Critical, High, Standard, Low/ROT — with tier size set by quota per content area. Critical content is reviewed every 6 months; lower tiers annually, so effort scales with risk instead of being spread evenly, or randomly.</li>
+      <li><strong>A defined execution pipeline</strong> — the process runs in three phases: pre-audit preparation (pulling analytics, confirming risk tags, assigning priority), audit execution (editorial review against a style guide, then SME accuracy validation against a structured rubric), and remediation (refresh, archive, or confirm-and-close) — each with clear owners and SLAs.</li>
+      <li><strong>Built-in accountability</strong> — a RACI matrix assigns Responsible / Accountable / Consulted / Informed roles across every step, so it's always clear who pulls the data, who validates accuracy, and who signs off on archiving. Ad-hoc triggers — policy changes, flagged errors, superseding content — force a review within 5 business days regardless of tier, so urgent issues don't wait for the next scheduled cycle.</li>
+    </ul>
+  </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Four</div><h2 class="head">Framework at a glance</h2>
+    <p class="lede">A simplified view of how priority tier maps to review cadence and ownership:</p>
+    <div class="snippet">
+      <div class="tag">BEFORE — AD HOC</div>
+      <div class="subj">No defined process</div>
+      <div class="body-text">Articles reviewed only when someone happened to notice an issue. No cadence, no ownership, no record of what had or hadn't been checked.</div>
+    </div>
+    <div class="snippet after">
+      <div class="tag">AFTER — TIERED SOP</div>
+      <div class="subj">Risk-weighted, recurring, owned</div>
+      <div class="body-text">Critical content reviewed every 6 months; lower tiers annually. Every article has a DRI, an SME, a defined rubric, and a next-due date logged in a master tracker.</div>
+    </div>
+    <p class="caption">The shift from "reviewed if someone notices" to "reviewed on a defined schedule, by design" was the core outcome of the SOP.</p>
+  </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Five</div><h2 class="head">Rollout</h2>
+    <p class="lede">The SOP went through structured stakeholder review with functional leads before launch. Rollout began with a full baseline inventory pull and priority assignment across the entire library, followed by scheduling rolling reviews against the new tier cadence. A master tracker was built to capture last audit date, outcome, and next due date per article — giving the team, and any future auditor, a live and defensible record for the first time.</p>
+  </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Six</div><h2 class="head">Results</h2>
+    <p class="lede">Directionally, formalizing the process brought the full library under governance for the first time:</p>
+    <ul class="plain">
+      <li><strong>100% of the content library brought under a review cadence</strong> — versus effectively 0% before — every article now has a defined owner and review cadence.</li>
+      <li><strong>Stale content (18+ months unreviewed)</strong> — reduced from roughly 34% to under 5% within the first full audit cycle.</li>
+      <li><strong>Average time-to-catch for outdated content</strong> — dropped from indefinite to a maximum 6-month window for the highest-risk content, and 12 months for everything else.</li>
+      <li><strong>Established a fully auditable trail</strong> — last reviewed, by whom, and with what outcome, for every article in the library.</li>
+      <li><strong>Workload became sustainable</strong> — SME review load became predictable and evenly distributed instead of reactive and lumpy.</li>
+    </ul>
+  </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Seven</div><h2 class="head">What I'd carry forward</h2>
+    <p class="lede">A knowledge base without a review cadence doesn't stay accurate by accident — it decays quietly. Formalizing the audit process turned content freshness from a matter of luck into a governed, risk-weighted, auditable system, without requiring more review effort than the team already had — just better-directed effort.</p>
+  </div></section>
+</main>
+<footer><div class="wrap"><h3>Skills demonstrated</h3><div class="tags"><span class="tag">Process design</span><span class="tag">Governance &amp; risk tiering</span><span class="tag">RACI &amp; accountability</span><span class="tag">Stakeholder alignment</span><span class="tag">Audit-trail design</span></div><p class="close-note">This is one of several case studies in my portfolio. Company, tool, and colleague names have been anonymized throughout to protect confidential information.</p></div></footer>
+</body>
+</html>
