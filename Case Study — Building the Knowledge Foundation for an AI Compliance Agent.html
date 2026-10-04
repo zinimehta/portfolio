@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case Study — Building the Knowledge Foundation for an AI Compliance Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14181D;
+    --ink-soft: #1E242B;
+    --paper: #ECE9DF;
+    --paper-dim: #DFDBCC;
+    --brass: #A9812E;
+    --brass-soft: #C9A45E;
+    --ledger: #33564B;
+    --muted: #8B8676;
+    --muted-dark: #9AA0A6;
+    --line: #C9C3AF;
+    --line-dark: #3A414A;
+    --good: #4F7A5E;
+    --warn: #B4652C;
+    --bg: var(--ink);
+    --fg: var(--paper);
+    --panel: var(--ink-soft);
+    --panel-line: var(--line-dark);
+  }
+  :root:not([data-theme="light"]) {
+    --bg: var(--ink);
+    --fg: var(--paper);
+  }
+  :root[data-theme="light"] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --panel: #F4F2E9;
+    --panel-line: var(--line);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: var(--paper);
+      --fg: var(--ink);
+      --panel: #F4F2E9;
+      --panel-line: var(--line);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+  }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    line-height: 1.55;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  a { color: var(--brass-soft); }
+  img, svg { max-width: 100%; }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .wide {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- notice ---------- */
+  .notice {
+    background: var(--ink);
+    border-bottom: 1px solid var(--line-dark);
+    padding: 10px 0;
+  }
+  .notice p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted-dark);
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .notice strong { color: var(--brass-soft); font-weight: 500; }
+
+  /* ---------- hero ---------- */
+  header.hero {
+    background: var(--ink);
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .kicker {
+    font-size: 0.92rem;
+    color: var(--brass-soft);
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-size: clamp(2.1rem, 5vw, 3.15rem);
+    line-height: 1.12;
+    color: var(--paper);
+    max-width: 20ch;
+  }
+  .subtitle {
+    margin-top: 20px;
+    font-size: 1.12rem;
+    color: #C7C2B2;
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+  .meta-row {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    border-top: 1px solid var(--line-dark);
+    padding-top: 20px;
+  }
+  .meta-item { min-width: 140px; }
+  .meta-label {
+    font-size: 0.72rem;
+    color: var(--muted-dark);
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 0.95rem;
+    color: var(--paper);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--warn);
+    flex-shrink: 0;
+  }
+  .dot.good { background: var(--good); }
+
+  /* ---------- stat strip ---------- */
+  .stat-strip {
+    background: var(--ink-soft);
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-cell {
+    padding: 26px 20px;
+    border-right: 1px solid var(--line-dark);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Newsreader', serif;
+    font-size: 2rem;
+    color: var(--brass-soft);
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted-dark);
+    margin-top: 4px;
+  }
+  @media (max-width: 640px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-cell:nth-child(2) { border-right: none; }
+  }
+
+  /* ---------- sections on paper ---------- */
+  main {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  section.doc {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section.doc:last-child { border-bottom: none; }
+  .section-num {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  h2.head {
+    font-size: clamp(1.5rem, 3.2vw, 1.9rem);
+    color: var(--ink);
+    max-width: 26ch;
+  }
+  .lede {
+    margin-top: 16px;
+    font-size: 1.05rem;
+    color: #3A362C;
+    max-width: 62ch;
+  }
+  p.body-text {
+    margin: 16px 0 0;
+    color: #3A362C;
+    max-width: 62ch;
+    font-size: 0.98rem;
+  }
+  p.body-text + p.body-text { margin-top: 14px; }
+
+  ul.plain {
+    margin: 16px 0 0;
+    padding-left: 0;
+    list-style: none;
+    max-width: 62ch;
+  }
+  ul.plain li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: #3A362C;
+    font-size: 0.97rem;
+  }
+  ul.plain li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--brass);
+  }
+
+  /* ledger table */
+  .ledger-table {
+    margin-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ledger-row .k {
+    font-size: 0.86rem;
+    color: var(--ledger);
+    font-weight: 600;
+  }
+  .ledger-row .v {
+    font-size: 0.92rem;
+    color: #3A362C;
+  }
+  @media (max-width: 600px) {
+    .ledger-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* flow diagram */
+  .flow {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0;
+  }
+  .flow-box {
+    background: var(--panel);
+    color: var(--paper);
+    border: 1px solid var(--panel-line);
+    padding: 16px 18px;
+    font-size: 0.86rem;
+    flex: 1 1 150px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .flow-box.dim {
+    background: transparent;
+    color: #6B6558;
+    border-style: dashed;
+    border-color: var(--line);
+  }
+  .flow-box .tag {
+    font-size: 0.68rem;
+    text-transform: none;
+    color: var(--brass-soft);
+    margin-bottom: 6px;
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+  }
+  .flow-box.dim .tag { color: var(--muted); }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    flex: 0 0 auto;
+  }
+  @media (max-width: 700px) {
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); padding: 6px 0; }
+  }
+
+  /* guardrail grid */
+  .guard-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .guard-cell {
+    background: var(--paper);
+    padding: 16px 18px;
+    font-size: 0.88rem;
+    color: #3A362C;
+  }
+  .guard-cell b { color: var(--ledger); display: block; margin-bottom: 4px; font-size: 0.86rem; }
+  @media (max-width: 600px) {
+    .guard-grid { grid-template-columns: 1fr; }
+  }
+
+  /* progress */
+  .progress-block {
+    margin-top: 28px;
+    border: 1px solid var(--line);
+    padding: 22px;
+    background: #F4F2E9;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .progress-top .figure {
+    font-family: 'Newsreader', serif;
+    font-size: 1.7rem;
+    color: var(--warn);
+  }
+  .progress-top .target {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .bar-track {
+    height: 8px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--warn);
+    width: 85.3%;
+  }
+  .bar-fill.pass {
+    background: var(--good);
+    width: 96%;
+  }
+  .bar-target-mark {
+    position: absolute;
+    left: 95%;
+    top: -4px; bottom: -4px;
+    width: 2px;
+    background: var(--ledger);
+  }
+  .progress-caption {
+    margin-top: 12px;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .status-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.78rem;
+    color: var(--ledger);
+    border: 1px solid var(--ledger);
+    padding: 4px 10px;
+  }
+  .status-tag.pass {
+    color: var(--good);
+    border-color: var(--good);
+  }
+
+  /* impact estimate cards */
+  .impact-note {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--brass);
+    background: #F4F2E9;
+    font-size: 0.88rem;
+    color: #4A4536;
+    max-width: 62ch;
+  }
+  .impact-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .impact-card {
+    border: 1px solid var(--line);
+    padding: 18px;
+  }
+  .impact-card .num {
+    font-family: 'Newsreader', serif;
+    font-size: 1.6rem;
+    color: var(--ledger);
+  }
+  .impact-card .label {
+    font-size: 0.82rem;
+    color: #3A362C;
+    margin-top: 6px;
+  }
+  .impact-card .sub {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .impact-card.pending {
+    border-style: dashed;
+    background: transparent;
+  }
+  .impact-card.pending .num {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+  @media (max-width: 700px) {
+    .impact-grid { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 701px) and (max-width: 900px) {
+    .impact-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* phase timeline */
+  .phase-list {
+    margin-top: 26px;
+    max-width: 62ch;
+  }
+  .phase {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase:last-child { border-bottom: none; }
+  .phase-marker {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+  }
+  .phase-title { font-weight: 600; font-size: 0.94rem; color: var(--ink); }
+  .phase-desc { font-size: 0.88rem; color: #4A4536; margin-top: 2px; }
+  .phase-status {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .phase-status.active { border-color: var(--warn); color: var(--warn); }
+  .phase-status.done { border-color: var(--good); color: var(--good); }
+
+  /* footer */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 0 60px;
+  }
+  .tags {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border: 1px solid var(--line-dark);
+    color: #C7C2B2;
+  }
+  footer .close-note {
+    margin-top: 26px;
+    font-size: 0.85rem;
+    color: var(--muted-dark);
+    max-width: 60ch;
+  }
+
+  /* ---------- shared additions ---------- */
+  .fig-note { margin: 0; padding: 0 0 16px; font-size: 0.76rem; color: var(--muted-dark); font-style: italic; }
+  .stat-strip { padding-top: 0; }
+  p.pull { margin: 26px 0 0; padding-left: 20px; border-left: 3px solid var(--brass); font-family: 'Newsreader', serif; font-style: italic; font-size: 1.15rem; color: var(--ledger); max-width: 52ch; }
+  .closing { margin-top: 20px; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.25rem; color: var(--ink); max-width: 42ch; }
+  .caption { margin-top: 10px; font-size: 0.86rem; color: var(--muted); font-style: italic; max-width: 62ch; }
+  .compare-block { margin-top: 28px; border: 1px solid var(--line); padding: 24px; background: #F4F2E9; }
+  .compare-row { margin-bottom: 18px; }
+  .compare-row:last-of-type { margin-bottom: 0; }
+  .compare-top { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 6px; }
+  .compare-top .who { color: var(--muted); }
+  .compare-top .val { font-family: 'Newsreader', serif; font-size: 1.1rem; color: var(--ink); }
+  .compare-track { height: 10px; background: var(--line); position: relative; overflow: hidden; }
+  .compare-fill { position: absolute; left: 0; top: 0; bottom: 0; }
+  .compare-fill.before { background: var(--warn); width: 100%; }
+  .compare-fill.after { background: var(--good); width: 20%; }
+  .compare-caption { margin-top: 14px; font-size: 0.82rem; color: var(--muted); }
+  .snippet { margin-top: 14px; max-width: 62ch; padding: 16px 20px; border-left: 3px solid var(--warn); background: #F1E3D9; }
+  .snippet.after { border-left-color: var(--good); background: #E2EBDF; }
+  .snippet .tag { font-family: 'Newsreader', serif; font-style: italic; font-size: 0.85rem; color: var(--warn); margin-bottom: 6px; }
+  .snippet.after .tag { color: var(--good); }
+  .snippet .subj { font-style: italic; font-size: 0.9rem; margin-bottom: 6px; color: var(--ink); }
+  .snippet .body-text { font-size: 0.9rem; color: var(--ink); }
+  table.tbl { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 18px 0; }
+  table.tbl th, table.tbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; color: #3A362C; }
+  table.tbl th { font-size: 0.78rem; color: var(--ledger); font-weight: 600; }
+  .row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin: 26px 0; }
+  .row .txt { flex: 1 1 280px; }
+  .row.flip { flex-direction: row-reverse; }
+  .row h3 { font-size: 1.15rem; color: var(--ink); margin-bottom: 4px; }
+  .phone { width: 220px; height: 380px; border: 8px solid var(--ink); border-radius: 30px; background: #fff; color: #1b2230; padding: 16px 12px; font-size: 12px; line-height: 1.4; overflow: hidden; flex: none; margin-inline: auto; }
+  .phone .t { font-weight: 700; font-size: 15px; line-height: 1.2; margin: 6px 0 10px; }
+  .phone .b { border-radius: 8px; padding: 9px 10px; margin-bottom: 8px; border: 1px solid var(--line); background: #F4F2E9; }
+  .phone .promo { border-left: 4px solid var(--ledger); background: #F4F2E9; border-radius: 6px; padding: 9px 10px; margin-bottom: 10px; }
+  .phone .btn { background: var(--ledger); color: #fff; text-align: center; border-radius: 20px; padding: 9px; font-weight: 600; margin-top: 10px; }
+  .phone .ok { background: #e3f4ec; color: #14532d; } .phone .warn { background: #fdecc8; color: #6b4500; } .phone .info { background: #dcecf8; color: #0c3a5c; }
+  .cap { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 8px; width: 220px; }
+  footer h3 { font-size: 1.1rem; color: var(--paper); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="notice"><p><strong>Note:</strong> Company name, internal tool names, and colleague names have been anonymized to protect confidential information. The process, architecture, and scope of my role described below are accurate.</p></div>
+<header class="hero"><div class="wide">
+<div class="kicker">Case study — Knowledge Management</div>
+<h1 class="title">Teaching an AI agent to answer like a compliance expert</h1>
+<p class="subtitle">How I designed the content architecture, governance model, and quality framework behind an AI assistant now guiding financial-crime investigators through 82 approved procedures — without a single unvetted answer.</p>
+<div class="meta-row"><div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">Knowledge Manager, Project Lead</div></div><div class="meta-item"><div class="meta-label">Context</div><div class="meta-value">Global fintech · Financial Crime Compliance</div></div><div class="meta-item"><div class="meta-label">Scope</div><div class="meta-value">82-procedure ringfenced knowledge base for ~200 investigators</div></div><div class="meta-item"><div class="meta-label">Status</div><div class="meta-value status-pill"><span class="dot good"></span>Live globally · US and international</div></div></div>
+</div></header>
+<div class="stat-strip"><div class="wide"><div class="stat-grid"><div class="stat-cell"><div class="stat-num">82</div><div class="stat-label">Approved procedures made retrievable</div></div><div class="stat-cell"><div class="stat-num">1</div><div class="stat-label">Ringfenced source of truth, replacing open search</div></div><div class="stat-cell"><div class="stat-num">~200</div><div class="stat-label">Investigators in eligible population</div></div><div class="stat-cell"><div class="stat-num">6</div><div class="stat-label">Scored dimensions in the QA framework</div></div></div></div></div>
+<main>
+<section class="doc"><div class="wrap"><div class="section-num">One</div><h2 class="head">Investigators were searching a haystack, not a library</h2>
+      <p class="lede">Suspicious-activity investigators need fast, correct answers to procedural questions in the middle of live casework — which typology applies, what a filing requires, what a jurisdiction-specific step looks like.</p>
+      <p class="body-text">The tool they had was open enterprise search, scoped to everything a logged-in employee could see. That included final approved procedures, but also working drafts under track changes, procedures awaiting approval, superseded versions, stakeholder review copies, and material outside the team's scope entirely — all returned side by side, with no way to tell them apart.</p>
+      <p class="body-text">Acting on the wrong result carried real consequences: a missed filing requirement, a step that had since changed, a write-up that failed QC. And when investigators didn't trust what search gave them, they escalated — asking a pod lead, manager, or subject-matter expert instead. Across a population of roughly 200 investigators, that added up to a steady, avoidable tax on the team's most senior capacity.</p>
+
+      <div class="ledger-table">
+        <div class="ledger-row"><div class="k">Unreliable search</div><div class="v">Process errors, missed filings, failed QC, rework</div></div>
+        <div class="ledger-row"><div class="k">Unnecessary escalation</div><div class="v">Senior time spent answering questions with existing, findable answers</div></div>
+        <div class="ledger-row"><div class="k">No onboarding shortcut</div><div class="v">New investigators had no fast way to self-serve, slowing ramp-up</div></div>
+        <div class="ledger-row"><div class="k">No refresh discipline</div><div class="v">Stale guidance kept circulating with no forcing function to retire it</div></div>
+      </div>
+    </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Two</div><h2 class="head">My mandate: build the knowledge foundation, not the chatbot</h2>
+      <p class="lede">Engineering could stand up an AI agent and connect it to a search platform and a language model in days. The harder, slower problem was mine: deciding exactly what that agent was allowed to know, how it was allowed to speak, and how that would stay true over time.</p>
+      <p class="body-text">I led the project end to end from the content and governance side, working alongside platform engineering and compliance subject-matter experts. My scope broke into three pillars:</p>
+      <ul class="plain">
+        <li><strong>Content architecture</strong> — deciding what a trustworthy, curated source of truth looks like, and building it.</li>
+        <li><strong>Governance model</strong> — the rules for what enters and leaves that source, and how it's kept current.</li>
+        <li><strong>Behavioral guardrails &amp; QA framework</strong> — defining what a "correct" answer means precisely enough to test it.</li>
+      </ul>
+    </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Three</div><h2 class="head">Designing the knowledge architecture</h2>
+      <p class="lede">The fix wasn't a better search algorithm — it was narrowing what the agent was ever allowed to see.</p>
+      <p class="body-text">I scoped and curated a single collection of 82 approved procedures covering the full investigative workflow, from initial alert review through post-investigation actions, and explicitly excluded adjacent content that didn't belong in an operational answer. I tagged every document by jurisdiction so the agent could serve only jurisdiction-appropriate guidance once an investigator's jurisdiction was confirmed.</p>
+
+      <div class="flow">
+        <div class="flow-box dim"><div class="tag">excluded</div>Drafts, track-changes, stakeholder copies, superseded versions</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box"><div class="tag">step 1 — owned by me</div>Controlled "approved content" folder, final versions only, single content owner</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box"><div class="tag">step 2</div>Ringfenced search collection, indexed daily, agent's only retrieval source</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box"><div class="tag">step 3</div>Agent, reachable from two identical access points</div>
+      </div>
+
+      <p class="body-text" style="margin-top:26px;">I also wrote the ongoing content lifecycle every future update has to follow: revise under change control → approve through the standard review process → accept changes and replace the source file → allow the search index to refresh → validate the agent actually retrieves the new version → log completion. Nothing enters the agent's world without going through that loop — new documents specifically require a manual step into the collection, so nothing arrives silently.</p>
+    </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Four</div><h2 class="head">Under the hood: the retrieval architecture</h2>
+      <p class="lede">This is a retrieval-augmented setup, not a fine-tuned model — the agent knows nothing on its own. Every answer is grounded in a document it retrieved at the moment of the question, which is precisely why the retrieval layer was worth designing this carefully.</p>
+      <ul class="plain">
+        <li><strong>Model</strong> — Claude Sonnet 5, used purely as a reasoning and response layer. It never answers from its own training data on procedural questions; it's instructed to answer only from what it retrieves.</li>
+        <li><strong>Retrieval integration</strong> — the agent platform connects to the enterprise search index through a Model Context Protocol (MCP) integration, scoped at query time to the one ringfenced collection I built. It has no path to the organization's broader search index at all — the boundary is structural, not just a prompt instruction.</li>
+        <li><strong>Indexing cadence</strong> — documents already in the collection are reindexed daily so edits to approved procedures propagate automatically. New documents don't: they require a deliberate two-step add — into the source folder, then manually into the collection — a gap I designed on purpose so nothing enters the agent's knowledge silently.</li>
+        <li><strong>Behavioral contract, decoupled from retrieval</strong> — the guardrails, citation rules, jurisdiction logic, and disclaimers live in a separately versioned context file I own, not hardcoded into the retrieval pipeline. That split meant I could tighten the agent's behavior without touching what it's allowed to retrieve, and vice versa.</li>
+        <li><strong>Two access surfaces, one behavior</strong> — an in-platform agent portal and a dedicated team-chat channel both call the same backend, the same collection, and the same context file, so there's no separate rules to maintain per channel.</li>
+        <li><strong>Observability</strong> — execution metadata (who ran it, what ran, duration, status) is logged separately from response content, since responses can touch sensitive case-adjacent language; a dedicated LLM-observability tool captures full reasoning traces and tool calls for QA review, with conversation threads retained for 90 days.</li>
+      </ul>
+    </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Five</div><h2 class="head">Defining what "correct" means</h2>
+      <p class="lede">An agent with the right sources can still answer badly. I authored the behavioral contract that governs how it's allowed to respond, then built the rubric to test it against.</p>
+
+      <div class="guard-grid">
+        <div class="guard-cell"><b>Hard stop on personal data</b>Any customer identifier in a message triggers an immediate refusal and a delete instruction — no exceptions.</div>
+        <div class="guard-cell"><b>No case decisions</b>The agent will not tell an investigator whether to file, clear, or escalate a case, or draft filing narratives.</div>
+        <div class="guard-cell"><b>Cites its source</b>Every substantive answer points back to the original approved article, never asserted without attribution.</div>
+        <div class="guard-cell"><b>Escalates its own uncertainty</b>When guidance isn't in scope, it says so and routes the investigator to the right human channel.</div>
+        <div class="guard-cell"><b>Standing disclaimer</b>Every answer states it's advisory and the investigator owns validation — with an enhanced warning on high-risk topics like filing guidance.</div>
+        <div class="guard-cell"><b>Jurisdiction confirmation</b>The agent confirms jurisdiction before giving jurisdiction-dependent guidance, every conversation.</div>
+      </div>
+
+      <p class="body-text" style="margin-top:26px;">From that contract, I built a QA rubric scoring every test response across six dimensions: <em>accuracy, source citation, jurisdiction handling, guardrail compliance, tone, and disclaimer/analyst-validation.</em> A response only passes if it clears all six — a correct answer with a missing disclaimer still fails. That rubric became the shared pass/fail language for engineering, compliance, and me for the rest of the project.</p>
+    </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Six</div><h2 class="head">Rollout, testing, and staying honest about the results</h2>
+      <p class="lede">I designed a two-phase rollout — domestic investigators first, international second — with each phase required to independently clear the same bar. Results from Phase 1 don't get to count as evidence for Phase 2; the second phase has to earn it on its own.</p>
+
+      <div class="phase-list">
+        <div class="phase">
+          <div class="phase-marker">01</div>
+          <div>
+            <div class="phase-title">Collection &amp; agent build</div>
+            <div class="phase-desc">All 82 documents indexed and confirmed retrievable; agent configured against the ringfenced collection.</div>
+            <span class="phase-status done">Completed</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-marker">02</div>
+          <div>
+            <div class="phase-title">Phase 1 user acceptance testing</div>
+            <div class="phase-desc">A 34-question test bank covering accuracy, typologies, filings, QC, escalation, jurisdiction, and out-of-scope handling.</div>
+            <span class="phase-status done">Completed — see result below</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-marker">03</div>
+          <div>
+            <div class="phase-title">Behavioral contract remediation</div>
+            <div class="phase-desc">Rewrote the guardrail and response-format rules against every dimension that failed, rather than lowering the bar.</div>
+            <span class="phase-status done">Completed</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-marker">04</div>
+          <div>
+            <div class="phase-title">Full revalidation</div>
+            <div class="phase-desc">Re-ran the entire test bank against the remediated contract, scored across all six QA dimensions.</div>
+            <span class="phase-status done">Completed — passed</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-marker">05</div>
+          <div>
+            <div class="phase-title">Phase 1 rollout &amp; stabilization monitoring</div>
+            <div class="phase-desc">US investigators provisioned access; agent performance and guardrail compliance monitored in production for two months before Phase 2 was considered.</div>
+            <span class="phase-status done">Completed</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-marker">06</div>
+          <div>
+            <div class="phase-title">Phase 2 — international go-live</div>
+            <div class="phase-desc">International investigators provisioned access to the same agent, ringfenced collection, and guardrails validated in Phase 1 — earned independently, not carried over from the US result.</div>
+            <span class="phase-status done">Completed — live</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-block">
+        <div class="progress-top">
+          <div class="figure">96% <span style="font-size:1rem; color:#6B6558;">(round 2)</span></div>
+          <div class="target">Go-live bar: 95%</div>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill pass"></div>
+          <div class="bar-target-mark"></div>
+        </div>
+        <p class="progress-caption">First-pass Phase 1 result was 85.3% (29/34) — below threshold, so it blocked go-live rather than being waved through. After remediating the agent's behavioral contract against every failed dimension, the second full test round cleared the bar.</p>
+        <span class="status-tag pass">Live in production · US and international</span>
+      </div>
+
+      <p class="body-text" style="margin-top:26px;">I also defined the rollback plan before launch: a fixed set of triggers — a guardrail failure, a personal-data exposure, a missing disclaimer at scale — that disable the agent immediately, with investigators redirected to the knowledge portal and their pod lead. No platform changes required, phase-level or global depending on the trigger. Deciding how to fail safely was as much a part of the design as deciding how to succeed.</p>
+    </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Seven</div><h2 class="head">Results</h2>
+      <p class="lede">The agent is live for both US and international investigators, cleared the quality bar at 96%, and has been running in production long enough to show a real effect on escalation volume.</p>
+
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="num">96%</div>
+          <div class="label">QA pass rate, round 2</div>
+          <div class="sub">Above the 95% go-live bar, across all six dimensions</div>
+        </div>
+        <div class="impact-card">
+          <div class="num">82 / 82</div>
+          <div class="label">Approved procedures retrievable with citations</div>
+          <div class="sub">Collection coverage — met at go-live</div>
+        </div>
+        <div class="impact-card">
+          <div class="num">100%</div>
+          <div class="label">Guardrail compliance required, zero tolerance</div>
+          <div class="sub">Any failure triggers rollback by design — met at go-live</div>
+        </div>
+        <div class="impact-card">
+          <div class="num">25–30%</div>
+          <div class="label">Reduction in routine procedural escalations</div>
+          <div class="sub">Pod leads and SMEs fielding fewer questions that already had a sourced answer in the agent</div>
+        </div>
+      </div>
+    </div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Eight</div><h2 class="head">What I'd carry forward</h2>
+      <p class="lede">Three things I'd repeat on the next AI knowledge project without hesitation.</p>
+      <ul class="plain">
+        <li>Treat the agent's knowledge base like any other regulated content library — named ownership, version control, and a lifecycle process, not a folder someone remembers to update.</li>
+        <li>Guardrails are a governance artifact, not a prompt tweak. They only mean something once they're written down, testable, and auditable against a rubric.</li>
+        <li>Design the measurement before launch. Setting the 95% bar and the six-dimension rubric up front is the only reason the 85% result was a checkpoint instead of a surprise.</li>
+      </ul>
+    </div></section>
+</main>
+<footer><div class="wrap"><h3>Skills demonstrated</h3><div class="tags"><span class="tag">Content architecture</span><span class="tag">Information governance</span><span class="tag">Taxonomy &amp; scoping</span><span class="tag">AI knowledge systems</span><span class="tag">QA framework design</span><span class="tag">Cross-functional program leadership</span><span class="tag">Change &amp; risk management</span></div><p class="close-note">This is one of several case studies in my portfolio. Company, tool, and colleague names have been anonymized throughout to protect confidential information.</p></div></footer>
+</body>
+</html>
