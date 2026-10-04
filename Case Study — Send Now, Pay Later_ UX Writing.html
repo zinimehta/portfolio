@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case Study — Send Now, Pay Later: UX Writing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14181D;
+    --ink-soft: #1E242B;
+    --paper: #ECE9DF;
+    --paper-dim: #DFDBCC;
+    --brass: #A9812E;
+    --brass-soft: #C9A45E;
+    --ledger: #33564B;
+    --muted: #8B8676;
+    --muted-dark: #9AA0A6;
+    --line: #C9C3AF;
+    --line-dark: #3A414A;
+    --good: #4F7A5E;
+    --warn: #B4652C;
+    --bg: var(--ink);
+    --fg: var(--paper);
+    --panel: var(--ink-soft);
+    --panel-line: var(--line-dark);
+  }
+  :root:not([data-theme="light"]) {
+    --bg: var(--ink);
+    --fg: var(--paper);
+  }
+  :root[data-theme="light"] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --panel: #F4F2E9;
+    --panel-line: var(--line);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: var(--paper);
+      --fg: var(--ink);
+      --panel: #F4F2E9;
+      --panel-line: var(--line);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+  }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    line-height: 1.55;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  a { color: var(--brass-soft); }
+  img, svg { max-width: 100%; }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .wide {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- notice ---------- */
+  .notice {
+    background: var(--ink);
+    border-bottom: 1px solid var(--line-dark);
+    padding: 10px 0;
+  }
+  .notice p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted-dark);
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .notice strong { color: var(--brass-soft); font-weight: 500; }
+
+  /* ---------- hero ---------- */
+  header.hero {
+    background: var(--ink);
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .kicker {
+    font-size: 0.92rem;
+    color: var(--brass-soft);
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-size: clamp(2.1rem, 5vw, 3.15rem);
+    line-height: 1.12;
+    color: var(--paper);
+    max-width: 20ch;
+  }
+  .subtitle {
+    margin-top: 20px;
+    font-size: 1.12rem;
+    color: #C7C2B2;
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+  .meta-row {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    border-top: 1px solid var(--line-dark);
+    padding-top: 20px;
+  }
+  .meta-item { min-width: 140px; }
+  .meta-label {
+    font-size: 0.72rem;
+    color: var(--muted-dark);
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 0.95rem;
+    color: var(--paper);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--warn);
+    flex-shrink: 0;
+  }
+  .dot.good { background: var(--good); }
+
+  /* ---------- stat strip ---------- */
+  .stat-strip {
+    background: var(--ink-soft);
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-cell {
+    padding: 26px 20px;
+    border-right: 1px solid var(--line-dark);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Newsreader', serif;
+    font-size: 2rem;
+    color: var(--brass-soft);
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted-dark);
+    margin-top: 4px;
+  }
+  @media (max-width: 640px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-cell:nth-child(2) { border-right: none; }
+  }
+
+  /* ---------- sections on paper ---------- */
+  main {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  section.doc {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section.doc:last-child { border-bottom: none; }
+  .section-num {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  h2.head {
+    font-size: clamp(1.5rem, 3.2vw, 1.9rem);
+    color: var(--ink);
+    max-width: 26ch;
+  }
+  .lede {
+    margin-top: 16px;
+    font-size: 1.05rem;
+    color: #3A362C;
+    max-width: 62ch;
+  }
+  p.body-text {
+    margin: 16px 0 0;
+    color: #3A362C;
+    max-width: 62ch;
+    font-size: 0.98rem;
+  }
+  p.body-text + p.body-text { margin-top: 14px; }
+
+  ul.plain {
+    margin: 16px 0 0;
+    padding-left: 0;
+    list-style: none;
+    max-width: 62ch;
+  }
+  ul.plain li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: #3A362C;
+    font-size: 0.97rem;
+  }
+  ul.plain li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--brass);
+  }
+
+  /* ledger table */
+  .ledger-table {
+    margin-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ledger-row .k {
+    font-size: 0.86rem;
+    color: var(--ledger);
+    font-weight: 600;
+  }
+  .ledger-row .v {
+    font-size: 0.92rem;
+    color: #3A362C;
+  }
+  @media (max-width: 600px) {
+    .ledger-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* flow diagram */
+  .flow {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0;
+  }
+  .flow-box {
+    background: var(--panel);
+    color: var(--paper);
+    border: 1px solid var(--panel-line);
+    padding: 16px 18px;
+    font-size: 0.86rem;
+    flex: 1 1 150px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .flow-box.dim {
+    background: transparent;
+    color: #6B6558;
+    border-style: dashed;
+    border-color: var(--line);
+  }
+  .flow-box .tag {
+    font-size: 0.68rem;
+    text-transform: none;
+    color: var(--brass-soft);
+    margin-bottom: 6px;
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+  }
+  .flow-box.dim .tag { color: var(--muted); }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    flex: 0 0 auto;
+  }
+  @media (max-width: 700px) {
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); padding: 6px 0; }
+  }
+
+  /* guardrail grid */
+  .guard-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .guard-cell {
+    background: var(--paper);
+    padding: 16px 18px;
+    font-size: 0.88rem;
+    color: #3A362C;
+  }
+  .guard-cell b { color: var(--ledger); display: block; margin-bottom: 4px; font-size: 0.86rem; }
+  @media (max-width: 600px) {
+    .guard-grid { grid-template-columns: 1fr; }
+  }
+
+  /* progress */
+  .progress-block {
+    margin-top: 28px;
+    border: 1px solid var(--line);
+    padding: 22px;
+    background: #F4F2E9;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .progress-top .figure {
+    font-family: 'Newsreader', serif;
+    font-size: 1.7rem;
+    color: var(--warn);
+  }
+  .progress-top .target {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .bar-track {
+    height: 8px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--warn);
+    width: 85.3%;
+  }
+  .bar-fill.pass {
+    background: var(--good);
+    width: 96%;
+  }
+  .bar-target-mark {
+    position: absolute;
+    left: 95%;
+    top: -4px; bottom: -4px;
+    width: 2px;
+    background: var(--ledger);
+  }
+  .progress-caption {
+    margin-top: 12px;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .status-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.78rem;
+    color: var(--ledger);
+    border: 1px solid var(--ledger);
+    padding: 4px 10px;
+  }
+  .status-tag.pass {
+    color: var(--good);
+    border-color: var(--good);
+  }
+
+  /* impact estimate cards */
+  .impact-note {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--brass);
+    background: #F4F2E9;
+    font-size: 0.88rem;
+    color: #4A4536;
+    max-width: 62ch;
+  }
+  .impact-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .impact-card {
+    border: 1px solid var(--line);
+    padding: 18px;
+  }
+  .impact-card .num {
+    font-family: 'Newsreader', serif;
+    font-size: 1.6rem;
+    color: var(--ledger);
+  }
+  .impact-card .label {
+    font-size: 0.82rem;
+    color: #3A362C;
+    margin-top: 6px;
+  }
+  .impact-card .sub {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .impact-card.pending {
+    border-style: dashed;
+    background: transparent;
+  }
+  .impact-card.pending .num {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+  @media (max-width: 700px) {
+    .impact-grid { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 701px) and (max-width: 900px) {
+    .impact-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* phase timeline */
+  .phase-list {
+    margin-top: 26px;
+    max-width: 62ch;
+  }
+  .phase {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase:last-child { border-bottom: none; }
+  .phase-marker {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+  }
+  .phase-title { font-weight: 600; font-size: 0.94rem; color: var(--ink); }
+  .phase-desc { font-size: 0.88rem; color: #4A4536; margin-top: 2px; }
+  .phase-status {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .phase-status.active { border-color: var(--warn); color: var(--warn); }
+  .phase-status.done { border-color: var(--good); color: var(--good); }
+
+  /* footer */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 0 60px;
+  }
+  .tags {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border: 1px solid var(--line-dark);
+    color: #C7C2B2;
+  }
+  footer .close-note {
+    margin-top: 26px;
+    font-size: 0.85rem;
+    color: var(--muted-dark);
+    max-width: 60ch;
+  }
+
+  /* ---------- shared additions ---------- */
+  .fig-note { margin: 0; padding: 0 0 16px; font-size: 0.76rem; color: var(--muted-dark); font-style: italic; }
+  .stat-strip { padding-top: 0; }
+  p.pull { margin: 26px 0 0; padding-left: 20px; border-left: 3px solid var(--brass); font-family: 'Newsreader', serif; font-style: italic; font-size: 1.15rem; color: var(--ledger); max-width: 52ch; }
+  .closing { margin-top: 20px; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.25rem; color: var(--ink); max-width: 42ch; }
+  .caption { margin-top: 10px; font-size: 0.86rem; color: var(--muted); font-style: italic; max-width: 62ch; }
+  .compare-block { margin-top: 28px; border: 1px solid var(--line); padding: 24px; background: #F4F2E9; }
+  .compare-row { margin-bottom: 18px; }
+  .compare-row:last-of-type { margin-bottom: 0; }
+  .compare-top { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 6px; }
+  .compare-top .who { color: var(--muted); }
+  .compare-top .val { font-family: 'Newsreader', serif; font-size: 1.1rem; color: var(--ink); }
+  .compare-track { height: 10px; background: var(--line); position: relative; overflow: hidden; }
+  .compare-fill { position: absolute; left: 0; top: 0; bottom: 0; }
+  .compare-fill.before { background: var(--warn); width: 100%; }
+  .compare-fill.after { background: var(--good); width: 20%; }
+  .compare-caption { margin-top: 14px; font-size: 0.82rem; color: var(--muted); }
+  .snippet { margin-top: 14px; max-width: 62ch; padding: 16px 20px; border-left: 3px solid var(--warn); background: #F1E3D9; }
+  .snippet.after { border-left-color: var(--good); background: #E2EBDF; }
+  .snippet .tag { font-family: 'Newsreader', serif; font-style: italic; font-size: 0.85rem; color: var(--warn); margin-bottom: 6px; }
+  .snippet.after .tag { color: var(--good); }
+  .snippet .subj { font-style: italic; font-size: 0.9rem; margin-bottom: 6px; color: var(--ink); }
+  .snippet .body-text { font-size: 0.9rem; color: var(--ink); }
+  table.tbl { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 18px 0; }
+  table.tbl th, table.tbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; color: #3A362C; }
+  table.tbl th { font-size: 0.78rem; color: var(--ledger); font-weight: 600; }
+  .row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin: 26px 0; }
+  .row .txt { flex: 1 1 280px; }
+  .row.flip { flex-direction: row-reverse; }
+  .row h3 { font-size: 1.15rem; color: var(--ink); margin-bottom: 4px; }
+  .phone { width: 220px; height: 380px; border: 8px solid var(--ink); border-radius: 30px; background: #fff; color: #1b2230; padding: 16px 12px; font-size: 12px; line-height: 1.4; overflow: hidden; flex: none; margin-inline: auto; }
+  .phone .t { font-weight: 700; font-size: 15px; line-height: 1.2; margin: 6px 0 10px; }
+  .phone .b { border-radius: 8px; padding: 9px 10px; margin-bottom: 8px; border: 1px solid var(--line); background: #F4F2E9; }
+  .phone .promo { border-left: 4px solid var(--ledger); background: #F4F2E9; border-radius: 6px; padding: 9px 10px; margin-bottom: 10px; }
+  .phone .btn { background: var(--ledger); color: #fff; text-align: center; border-radius: 20px; padding: 9px; font-weight: 600; margin-top: 10px; }
+  .phone .ok { background: #e3f4ec; color: #14532d; } .phone .warn { background: #fdecc8; color: #6b4500; } .phone .info { background: #dcecf8; color: #0c3a5c; }
+  .cap { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 8px; width: 220px; }
+  footer h3 { font-size: 1.1rem; color: var(--paper); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="notice"><p><strong>Note:</strong> Company name, internal tool names, and colleague names have been anonymized to protect confidential information. The process, architecture, and scope of my role described below are accurate.</p></div>
+<header class="hero"><div class="wide">
+<div class="kicker">Case study — UX Writing</div>
+<h1 class="title">Teaching a new credit feature to people sending money home</h1>
+<p class="subtitle">How I wrote the copy for "Send Now, Pay Later" inside a money transfer app, from first banner to error states, so customers could understand a new offer without losing trust or momentum.</p>
+<div class="meta-row"><div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">Senior UX Writer</div></div><div class="meta-item"><div class="meta-label">Context</div><div class="meta-value">Global money transfer app · Australia</div></div><div class="meta-item"><div class="meta-label">Scope</div><div class="meta-value">Research, copywriting, and design collaboration with product and a lending partner</div></div><div class="meta-item"><div class="meta-label">Status</div><div class="meta-value status-pill"><span class="dot good"></span>Launched</div></div></div>
+</div></header>
+<div class="stat-strip"><div class="wide"><div class="stat-grid"><div class="stat-cell"><div class="stat-num">4</div><div class="stat-label">Messaging touchpoints in the flow</div></div><div class="stat-cell"><div class="stat-num">3</div><div class="stat-label">Edge states written</div></div><div class="stat-cell"><div class="stat-num">3</div><div class="stat-label">Competitor services reviewed</div></div><div class="stat-cell"><div class="stat-num">1</div><div class="stat-label">Market: Australia</div></div></div></div></div>
+<main>
+<section class="doc"><div class="wrap"><div class="section-num">One</div><h2 class="head">The problem</h2>
+<p class="lede">A global money transfer company partnered with a lending provider to let customers in Australia borrow a short-term top-up and add it to their transfer. The business wanted three things: a higher average transfer amount, more frequent transfers, and a value-added service customers would come back for.</p>
+<p class="body-text">The writing problem: a credit product appearing in the middle of a money-sending flow. People are cautious about fees and fine print when they send money. If the copy felt pushy or unclear, they'd ignore it or abandon the transfer.</p>
+
+</div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Two</div><h2 class="head">Research</h2>
+<ul class="plain">
+<li><strong>Competitor analysis.</strong> I reviewed three similar services (Rewire, Xayo, Wagepay) to see how they describe fees, eligibility and repayment, and where they place the offer.</li>
+<li><strong>Information priority.</strong> With the designers, I decided what customers must see on each screen and what could wait one tap later.</li>
+<li><strong>Vocabulary testing.</strong> I tested terms with Australian users. Words like <i>boost</i> and <i>top-up</i> felt familiar and low-pressure, while heavier lending terms felt risky. I used the terms users already knew throughout the flow.</li>
+</ul>
+
+</div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Three</div><h2 class="head">Where the offer lives</h2>
+<p class="lede">We placed messaging at four points. Each does one job, so the tone shifts with what the customer is doing at that moment.</p>
+
+<div class="row">
+<div><div class="phone"><div class="t">Welcome back</div>
+<div class="promo"><strong>Send more with the top-up</strong><br>Borrow up to $2,000 to boost your transfer.<br><u>Learn more</u></div>
+<div class="b">Start a money transfer<br><strong>Send to: Country</strong></div><div class="btn">Check rates</div></div><div class="cap">Home: first sight, so it educates</div></div>
+<div class="txt"><h3>1. Home banner: educate</h3><p class="body-text">This is the first time customers see the offer. The copy names the benefit in one line, gives the limit, and leads to a fuller explanation. No jargon, no urgency.</p></div>
+</div>
+
+<div class="row flip">
+<div><div class="phone"><div class="promo">Want to send more? Borrow up to $2,000 with the top-up.</div><div class="t">Confirm payment and delivery</div>
+<div class="b">You're sending<br><strong>100.00 USD</strong></div><div class="b">Your receiver gets<br><strong>853.53</strong></div><div class="btn">Continue</div></div><div class="cap">Estimate: decision moment</div></div>
+<div class="txt"><h3>2. Estimate screen: converse</h3><p class="body-text">Here customers decide how much to send. The tone gets more direct and conversational, framed as a question so it reads as an option rather than a push.</p></div>
+</div>
+
+<div class="row">
+<div><div class="phone"><div class="promo">Send more next time. Borrow up to $2,000 for your next transfer.</div><div class="btn">Start new transfer</div><div class="t" style="margin-top:14px">Your transfer history</div><div class="b">Transfer 1 · Complete</div></div><div class="cap">History: gentle reminder</div></div>
+<div class="txt"><h3>3. Transfer history: remind</h3><p class="body-text">The customer has already finished a transfer, so the copy is a soft reminder that they can send more next time. No call to act now.</p></div>
+</div>
+
+<div class="row flip">
+<div><div class="phone"><div class="t">Send more with the top-up</div><div class="b" style="font-size:11px">Borrow up to $2,000 for a fixed 5% fee.<br><br>How it works:<br>1. Sign up or log in<br>2. Link your bank<br>3. Cash out your top-up<br>4. Add it to your transfer</div><div class="btn">Continue</div></div><div class="cap">Interstitial: explain simply</div></div>
+<div class="txt"><h3>4. Interstitial: explain</h3><p class="body-text">Tapping <i>Learn more</i> opens the detail. I wrote the credit process as four plain steps, put the fee up front, and added one line on where the funds go, so there are no surprises later.</p></div>
+</div>
+
+</div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Four</div><h2 class="head">The edge states</h2>
+<p class="lede">The messages customers see when something doesn't go to plan were the most important copy in the project. Each one says what happened, what it means, and what they can still do.</p>
+<table class="tbl">
+<tr><th>State</th><th>The user's situation</th><th>How the copy responds</th></tr>
+<tr><td>Success</td><td>Cashed out the top-up</td><td>Confirms the amount and that the transfer is boosted. Uses familiar words ("boost", "top-up").</td></tr>
+<tr><td>Not eligible</td><td>Can't borrow right now</td><td>Says so plainly, points to the lender's support to reduce queries to our team, and reminds them they can still send money.</td></tr>
+<tr><td>Active loan</td><td>Already has a top-up</td><td>Explains they can't take another yet, and that sending money works as normal.</td></tr>
+</table>
+
+<div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:24px 0">
+<div><div class="phone" style="height:250px"><div class="b ok">Done! You've cashed out with the top-up. Your transfer is boosted.</div><div class="t">Confirm payment</div></div></div>
+<div><div class="phone" style="height:250px"><div class="b warn">You can't borrow right now. Contact the lender for help, or continue your transfer with us.</div><div class="t">Confirm payment</div></div></div>
+<div><div class="phone" style="height:250px"><div class="b info">You already have an active top-up. You can still continue your transfer.</div><div class="t">Confirm payment</div></div></div>
+</div>
+
+</div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Five</div><h2 class="head">Results</h2>
+<p class="lede">After launch, the offer saw a clear increase in adoption. We tracked it across the funnel:</p>
+<ul class="plain">
+<li><strong>Adoption rate</strong> increased after launch, as more customers chose to add a top-up to their transfer.</li>
+<li><strong>Banner click-through</strong> grew, especially on the home page, where the copy introduced the offer for the first time.</li>
+<li><strong>Average transfer amount</strong> was higher for customers who used the top-up, which was a core goal of the project.</li>
+</ul>
+
+</div></section>
+<section class="doc"><div class="wrap"><div class="section-num">Six</div><h2 class="head">What I'd carry forward</h2>
+<ul class="plain">
+<li>Familiar words beat precise ones. The vocabulary testing changed several terms.</li>
+<li>Error and edge states carry the most trust, because that's when customers check whether a brand is being straight with them.</li>
+<li>Match tone to the moment. The same offer needed four different voices across four screens.</li>
+<li>Next, I'd test banner wording and placement to push adoption further.</li>
+</ul>
+</div></section>
+</main>
+<footer><div class="wrap"><h3>Skills demonstrated</h3><div class="tags"><span class="tag">UX writing</span><span class="tag">Competitor analysis</span><span class="tag">Vocabulary testing</span><span class="tag">Microcopy &amp; error states</span><span class="tag">Design collaboration</span></div><p class="close-note">This is one of several case studies in my portfolio. Company, tool, and colleague names have been anonymized throughout to protect confidential information.</p></div></footer>
+</body>
+</html>
