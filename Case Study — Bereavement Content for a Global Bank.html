@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case Study — Bereavement Content for a Global Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14181D;
+    --ink-soft: #1E242B;
+    --paper: #ECE9DF;
+    --paper-dim: #DFDBCC;
+    --brass: #A9812E;
+    --brass-soft: #C9A45E;
+    --ledger: #33564B;
+    --muted: #8B8676;
+    --muted-dark: #9AA0A6;
+    --line: #C9C3AF;
+    --line-dark: #3A414A;
+    --good: #4F7A5E;
+    --warn: #B4652C;
+    --bg: var(--ink);
+    --fg: var(--paper);
+    --panel: var(--ink-soft);
+    --panel-line: var(--line-dark);
+  }
+  :root:not([data-theme="light"]) {
+    --bg: var(--ink);
+    --fg: var(--paper);
+  }
+  :root[data-theme="light"] {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --panel: #F4F2E9;
+    --panel-line: var(--line);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: var(--paper);
+      --fg: var(--ink);
+      --panel: #F4F2E9;
+      --panel-line: var(--line);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+  }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    line-height: 1.55;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  a { color: var(--brass-soft); }
+  img, svg { max-width: 100%; }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .wide {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- notice ---------- */
+  .notice {
+    background: var(--ink);
+    border-bottom: 1px solid var(--line-dark);
+    padding: 10px 0;
+  }
+  .notice p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted-dark);
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .notice strong { color: var(--brass-soft); font-weight: 500; }
+
+  /* ---------- hero ---------- */
+  header.hero {
+    background: var(--ink);
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .kicker {
+    font-size: 0.92rem;
+    color: var(--brass-soft);
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-size: clamp(2.1rem, 5vw, 3.15rem);
+    line-height: 1.12;
+    color: var(--paper);
+    max-width: 20ch;
+  }
+  .subtitle {
+    margin-top: 20px;
+    font-size: 1.12rem;
+    color: #C7C2B2;
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+  .meta-row {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    border-top: 1px solid var(--line-dark);
+    padding-top: 20px;
+  }
+  .meta-item { min-width: 140px; }
+  .meta-label {
+    font-size: 0.72rem;
+    color: var(--muted-dark);
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-size: 0.95rem;
+    color: var(--paper);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--warn);
+    flex-shrink: 0;
+  }
+  .dot.good { background: var(--good); }
+
+  /* ---------- stat strip ---------- */
+  .stat-strip {
+    background: var(--ink-soft);
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-cell {
+    padding: 26px 20px;
+    border-right: 1px solid var(--line-dark);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Newsreader', serif;
+    font-size: 2rem;
+    color: var(--brass-soft);
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted-dark);
+    margin-top: 4px;
+  }
+  @media (max-width: 640px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-cell:nth-child(2) { border-right: none; }
+  }
+
+  /* ---------- sections on paper ---------- */
+  main {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  section.doc {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section.doc:last-child { border-bottom: none; }
+  .section-num {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  h2.head {
+    font-size: clamp(1.5rem, 3.2vw, 1.9rem);
+    color: var(--ink);
+    max-width: 26ch;
+  }
+  .lede {
+    margin-top: 16px;
+    font-size: 1.05rem;
+    color: #3A362C;
+    max-width: 62ch;
+  }
+  p.body-text {
+    margin: 16px 0 0;
+    color: #3A362C;
+    max-width: 62ch;
+    font-size: 0.98rem;
+  }
+  p.body-text + p.body-text { margin-top: 14px; }
+
+  ul.plain {
+    margin: 16px 0 0;
+    padding-left: 0;
+    list-style: none;
+    max-width: 62ch;
+  }
+  ul.plain li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: #3A362C;
+    font-size: 0.97rem;
+  }
+  ul.plain li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--brass);
+  }
+
+  /* ledger table */
+  .ledger-table {
+    margin-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ledger-row .k {
+    font-size: 0.86rem;
+    color: var(--ledger);
+    font-weight: 600;
+  }
+  .ledger-row .v {
+    font-size: 0.92rem;
+    color: #3A362C;
+  }
+  @media (max-width: 600px) {
+    .ledger-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* flow diagram */
+  .flow {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0;
+  }
+  .flow-box {
+    background: var(--panel);
+    color: var(--paper);
+    border: 1px solid var(--panel-line);
+    padding: 16px 18px;
+    font-size: 0.86rem;
+    flex: 1 1 150px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .flow-box.dim {
+    background: transparent;
+    color: #6B6558;
+    border-style: dashed;
+    border-color: var(--line);
+  }
+  .flow-box .tag {
+    font-size: 0.68rem;
+    text-transform: none;
+    color: var(--brass-soft);
+    margin-bottom: 6px;
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+  }
+  .flow-box.dim .tag { color: var(--muted); }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    flex: 0 0 auto;
+  }
+  @media (max-width: 700px) {
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); padding: 6px 0; }
+  }
+
+  /* guardrail grid */
+  .guard-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .guard-cell {
+    background: var(--paper);
+    padding: 16px 18px;
+    font-size: 0.88rem;
+    color: #3A362C;
+  }
+  .guard-cell b { color: var(--ledger); display: block; margin-bottom: 4px; font-size: 0.86rem; }
+  @media (max-width: 600px) {
+    .guard-grid { grid-template-columns: 1fr; }
+  }
+
+  /* progress */
+  .progress-block {
+    margin-top: 28px;
+    border: 1px solid var(--line);
+    padding: 22px;
+    background: #F4F2E9;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .progress-top .figure {
+    font-family: 'Newsreader', serif;
+    font-size: 1.7rem;
+    color: var(--warn);
+  }
+  .progress-top .target {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .bar-track {
+    height: 8px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--warn);
+    width: 85.3%;
+  }
+  .bar-fill.pass {
+    background: var(--good);
+    width: 96%;
+  }
+  .bar-target-mark {
+    position: absolute;
+    left: 95%;
+    top: -4px; bottom: -4px;
+    width: 2px;
+    background: var(--ledger);
+  }
+  .progress-caption {
+    margin-top: 12px;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .status-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.78rem;
+    color: var(--ledger);
+    border: 1px solid var(--ledger);
+    padding: 4px 10px;
+  }
+  .status-tag.pass {
+    color: var(--good);
+    border-color: var(--good);
+  }
+
+  /* impact estimate cards */
+  .impact-note {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--brass);
+    background: #F4F2E9;
+    font-size: 0.88rem;
+    color: #4A4536;
+    max-width: 62ch;
+  }
+  .impact-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .impact-card {
+    border: 1px solid var(--line);
+    padding: 18px;
+  }
+  .impact-card .num {
+    font-family: 'Newsreader', serif;
+    font-size: 1.6rem;
+    color: var(--ledger);
+  }
+  .impact-card .label {
+    font-size: 0.82rem;
+    color: #3A362C;
+    margin-top: 6px;
+  }
+  .impact-card .sub {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .impact-card.pending {
+    border-style: dashed;
+    background: transparent;
+  }
+  .impact-card.pending .num {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+  @media (max-width: 700px) {
+    .impact-grid { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 701px) and (max-width: 900px) {
+    .impact-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* phase timeline */
+  .phase-list {
+    margin-top: 26px;
+    max-width: 62ch;
+  }
+  .phase {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase:last-child { border-bottom: none; }
+  .phase-marker {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 0.95rem;
+  }
+  .phase-title { font-weight: 600; font-size: 0.94rem; color: var(--ink); }
+  .phase-desc { font-size: 0.88rem; color: #4A4536; margin-top: 2px; }
+  .phase-status {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .phase-status.active { border-color: var(--warn); color: var(--warn); }
+  .phase-status.done { border-color: var(--good); color: var(--good); }
+
+  /* footer */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 0 60px;
+  }
+  .tags {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border: 1px solid var(--line-dark);
+    color: #C7C2B2;
+  }
+  footer .close-note {
+    margin-top: 26px;
+    font-size: 0.85rem;
+    color: var(--muted-dark);
+    max-width: 60ch;
+  }
+
+  /* ---------- shared additions ---------- */
+  .fig-note { margin: 0; padding: 0 0 16px; font-size: 0.76rem; color: var(--muted-dark); font-style: italic; }
+  .stat-strip { padding-top: 0; }
+  p.pull { margin: 26px 0 0; padding-left: 20px; border-left: 3px solid var(--brass); font-family: 'Newsreader', serif; font-style: italic; font-size: 1.15rem; color: var(--ledger); max-width: 52ch; }
+  .closing { margin-top: 20px; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.25rem; color: var(--ink); max-width: 42ch; }
+  .caption { margin-top: 10px; font-size: 0.86rem; color: var(--muted); font-style: italic; max-width: 62ch; }
+  .compare-block { margin-top: 28px; border: 1px solid var(--line); padding: 24px; background: #F4F2E9; }
+  .compare-row { margin-bottom: 18px; }
+  .compare-row:last-of-type { margin-bottom: 0; }
+  .compare-top { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 6px; }
+  .compare-top .who { color: var(--muted); }
+  .compare-top .val { font-family: 'Newsreader', serif; font-size: 1.1rem; color: var(--ink); }
+  .compare-track { height: 10px; background: var(--line); position: relative; overflow: hidden; }
+  .compare-fill { position: absolute; left: 0; top: 0; bottom: 0; }
+  .compare-fill.before { background: var(--warn); width: 100%; }
+  .compare-fill.after { background: var(--good); width: 20%; }
+  .compare-caption { margin-top: 14px; font-size: 0.82rem; color: var(--muted); }
+  .snippet { margin-top: 14px; max-width: 62ch; padding: 16px 20px; border-left: 3px solid var(--warn); background: #F1E3D9; }
+  .snippet.after { border-left-color: var(--good); background: #E2EBDF; }
+  .snippet .tag { font-family: 'Newsreader', serif; font-style: italic; font-size: 0.85rem; color: var(--warn); margin-bottom: 6px; }
+  .snippet.after .tag { color: var(--good); }
+  .snippet .subj { font-style: italic; font-size: 0.9rem; margin-bottom: 6px; color: var(--ink); }
+  .snippet .body-text { font-size: 0.9rem; color: var(--ink); }
+  table.tbl { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 18px 0; }
+  table.tbl th, table.tbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; color: #3A362C; }
+  table.tbl th { font-size: 0.78rem; color: var(--ledger); font-weight: 600; }
+  .row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin: 26px 0; }
+  .row .txt { flex: 1 1 280px; }
+  .row.flip { flex-direction: row-reverse; }
+  .row h3 { font-size: 1.15rem; color: var(--ink); margin-bottom: 4px; }
+  .phone { width: 220px; height: 380px; border: 8px solid var(--ink); border-radius: 30px; background: #fff; color: #1b2230; padding: 16px 12px; font-size: 12px; line-height: 1.4; overflow: hidden; flex: none; margin-inline: auto; }
+  .phone .t { font-weight: 700; font-size: 15px; line-height: 1.2; margin: 6px 0 10px; }
+  .phone .b { border-radius: 8px; padding: 9px 10px; margin-bottom: 8px; border: 1px solid var(--line); background: #F4F2E9; }
+  .phone .promo { border-left: 4px solid var(--ledger); background: #F4F2E9; border-radius: 6px; padding: 9px 10px; margin-bottom: 10px; }
+  .phone .btn { background: var(--ledger); color: #fff; text-align: center; border-radius: 20px; padding: 9px; font-weight: 600; margin-top: 10px; }
+  .phone .ok { background: #e3f4ec; color: #14532d; } .phone .warn { background: #fdecc8; color: #6b4500; } .phone .info { background: #dcecf8; color: #0c3a5c; }
+  .cap { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 8px; width: 220px; }
+  footer h3 { font-size: 1.1rem; color: var(--paper); font-weight: 500; }
+
+  .flow-box{background:#1E242B !important;color:#ECE9DF !important;font-size:0.92rem;line-height:1.5}
+  .flow-box.dim{background:transparent !important;color:#6B6558 !important}
+  .flow-box .tag{color:#C9A45E !important;font-size:0.82rem}
+  .flow-box.dim .tag{color:#8B8676 !important}
+  .browser{flex:1 1 360px;max-width:460px;margin-inline:auto;background:#fff;color:#1b2230;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 6px 22px rgba(20,24,29,.12)}
+  .bbar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:#E9E6DB;border-bottom:1px solid var(--line)}
+  .bbar i{width:9px;height:9px;border-radius:50%;background:#B9B3A0;display:block}
+  .bbar span{margin-left:10px;flex:1;background:#fff;border-radius:12px;padding:3px 12px;font-size:11px;color:#6B6558}
+  .bnav{display:flex;gap:16px;padding:10px 20px;border-bottom:1px solid #E5E2D6;font-size:11px;color:#4A4536}
+  .bnav b{color:#33564B}
+  .bbody{padding:22px 22px 24px}
+  .bbody h4{font-family:'Newsreader',Georgia,serif;font-weight:500;font-size:1.25rem;line-height:1.25;margin:0 0 10px;color:#14181D}
+  .bbody p{margin:0 0 14px;font-size:13px;line-height:1.55;color:#3A362C}
+  .bbody .bar{border-left:3px solid #33564B;padding-left:10px;font-weight:600;font-size:13px;margin:18px 0 12px;color:#14181D}
+  .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .bgrid.three{grid-template-columns:repeat(3,1fr)}
+  .bcard{border:1px solid #D8D4C4;background:#F7F5EE;border-radius:6px;padding:12px 14px;font-size:12.5px;line-height:1.5;color:#3A362C}
+  .bcard b{display:block;font-size:13px;line-height:1.35;margin-bottom:4px;color:#14181D}
+  .bbtn{display:inline-block;background:#33564B;color:#fff;font-size:12.5px;font-weight:600;padding:9px 18px;border-radius:4px}
+  @media (max-width:520px){.bgrid,.bgrid.three{grid-template-columns:1fr}}
+  .guard-cell{background:#F4F2E9 !important;color:#14181D !important;font-size:0.97rem !important;line-height:1.55;padding:20px 22px !important}
+  .guard-cell b{color:#14181D !important;font-size:1.02rem !important;font-weight:600;margin-bottom:6px !important}
+  p.pull{color:#14181D !important}
+</style>
+</head>
+<body>
+<div class="notice"><p><strong>Note:</strong> Screens shown are illustrative mockups, not the bank's actual website. The approach, structure and scope of my role described below are accurate.</p></div>
+<header class="hero"><div class="wide">
+<div class="kicker">Case study — UX Writing</div>
+<h1 class="title">Writing for people at their hardest moment</h1>
+<p class="subtitle">How I structured and wrote a bereavement resource for a global bank, so people dealing with loss could find what to do next without feeling like they were dealing with paperwork.</p>
+<div class="meta-row"><div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">UX Writer</div></div><div class="meta-item"><div class="meta-label">Context</div><div class="meta-value">Global bank · UK retail banking</div></div><div class="meta-item"><div class="meta-label">Scope</div><div class="meta-value">UX research, copywriting, style guide adherence, design collaboration</div></div><div class="meta-item"><div class="meta-label">Status</div><div class="meta-value status-pill"><span class="dot good"></span>Delivered · website</div></div></div>
+</div></header>
+<div class="stat-strip"><div class="wide"><div class="stat-grid"><div class="stat-cell"><div class="stat-num">5</div><div class="stat-label">Stages in the step-by-step guide</div></div><div class="stat-cell"><div class="stat-num">3</div><div class="stat-label">Supporting routes: what to do, wellbeing, FAQs</div></div><div class="stat-cell"><div class="stat-num">4</div><div class="stat-label">Brand voice principles applied</div></div><div class="stat-cell"><div class="stat-num">1</div><div class="stat-label">Dedicated route to the bereavement team</div></div></div></div></div>
+<main>
+<section class="doc"><div class="wrap"><div class="section-num">One</div><h2 class="head">A page that had to inform and comfort at the same time</h2>
+<p class="lede">The bank wanted a new bereavement section on its website. It had two jobs: tell customers what they need to do when someone dies, and give them a sense of support during a difficult time.</p>
+<p class="body-text">That is a hard writing brief. People arrive stressed, grieving and often unfamiliar with banking processes. The page had to be complete enough to be a real resource, but gentle enough not to add to the weight. It also had to sound like the bank, within a brand voice that is normally conversational and has a touch of wit.</p>
+<div class="ledger-table">
+<div class="ledger-row"><div class="k">Emotional load</div><div class="v">Readers are grieving, so every extra line of formality costs them</div></div>
+<div class="ledger-row"><div class="k">Unfamiliar process</div><div class="v">Most people have never had to register a death or settle an estate</div></div>
+<div class="ledger-row"><div class="k">Sensitive accuracy</div><div class="v">Legal and financial steps where careless wording could mislead</div></div>
+<div class="ledger-row"><div class="k">Brand voice limits</div><div class="v">A conversational voice that needed careful adjustment for this context</div></div>
+</div></div></section>
+
+<section class="doc"><div class="wrap"><div class="section-num">Two</div><h2 class="head">My role: structure, voice and clarity</h2>
+<p class="lede">I worked with the project manager and UX designers across three areas.</p>
+<ul class="plain">
+<li><strong>Information architecture</strong> — deciding how a large amount of information could be organised for people who are overwhelmed.</li>
+<li><strong>Copywriting</strong> — drafting the content to the bank's internal style guide and tone of voice.</li>
+<li><strong>Design collaboration</strong> — working with designers so the layout supported the copy, with short blocks, clear headings and generous spacing.</li>
+</ul></div></section>
+
+<section class="doc"><div class="wrap"><div class="section-num">Three</div><h2 class="head">Starting from the brand voice</h2>
+<p class="lede">The bank's tone of voice rests on four principles. Customers should recognise the bank by how it writes, just as they would by its logo.</p>
+<div class="guard-grid">
+<div class="guard-cell"><b>Human</b>Acknowledge the situation first. Write as a person who understands, not an institution processing a request.</div>
+<div class="guard-cell"><b>Insightful</b>Anticipate what people will need next and answer it before they have to ask.</div>
+<div class="guard-cell"><b>Confident</b>Tell people exactly what to do and how we'll help, in clear and direct terms.</div>
+<div class="guard-cell"><b>Intelligent wit</b>Set aside for this context. Sensitivity takes priority over personality.</div>
+</div>
+<p class="pull">Following a style guide on a sensitive topic means knowing which parts of the voice to turn up, and which to put away.</p></div></section>
+
+<section class="doc"><div class="wrap"><div class="section-num">Four</div><h2 class="head">Designing the structure</h2>
+<p class="lede">The goal was to let someone arrive confused and leave knowing their next step.</p>
+<p class="body-text">I kept the main page light and moved detail into supporting pages, so no one has to read everything to find what they need.</p>
+<div class="flow">
+<div class="flow-box"><div class="tag">entry</div>Acknowledge the situation and say support is available</div>
+<div class="flow-arrow">→</div>
+<div class="flow-box"><div class="tag">guide</div>Five stages, in the order people are likely to meet them</div>
+<div class="flow-arrow">→</div>
+<div class="flow-box"><div class="tag">detail</div>What to do when someone dies, FAQs and documents</div>
+<div class="flow-arrow">→</div>
+<div class="flow-box"><div class="tag">support</div>Financial and emotional wellbeing</div>
+</div></div></section>
+
+<section class="doc"><div class="wide"><div class="section-num">Five</div><h2 class="head">The writing decisions</h2>
+<p class="lede" style="max-width:62ch">Four decisions shaped the page. Each followed the same pattern: what the reader needs, then how the copy responds.</p>
+
+<div class="row">
+<div class="browser"><div class="bbar"><i></i><i></i><i></i><span>bank.com/help/bereavement</span></div><div class="bnav"><b>Banking</b><span>Borrowing</span><span>Investing</span><span>Help</span></div><div class="bbody"><h4>Your step-by-step guide</h4><p>A handful of things need to be done soon after someone has died. Start here and we'll guide you through each one.</p>
+<div class="bgrid">
+<div class="bcard"><b>Step 1 · Registering the death</b>When someone passes away, the death must be registered.</div>
+<div class="bcard"><b>Step 2 · Letting us know</b>Tell us, and find out which accounts they held with us.</div>
+<div class="bcard"><b>Step 3 · Emergency needs</b>We can release funds from the estate for urgent costs.</div>
+<div class="bcard"><b>Step 4 · Handling an estate</b>This can be complex, depending on each case.</div>
+</div></div></div>
+<div class="txt"><h3>1. Break the process into steps</h3><p class="body-text" style="margin-top:6px">A long, formal process becomes five short stages. Each card gives one sentence on what the step is, so people can see the whole journey at a glance and know where they are. That is what makes it feel manageable.</p></div>
+</div>
+
+<div class="row flip">
+<div class="browser"><div class="bbar"><i></i><i></i><i></i><span>bank.com/help/bereavement</span></div><div class="bnav"><b>Banking</b><span>Borrowing</span><span>Investing</span><span>Help</span></div><div class="bbody"><h4>Bereavement help</h4><p>The death of someone close is always a difficult time.</p>
+<p>Dealing with practical matters and making financial decisions can seem overwhelming. We're here to support you throughout.</p>
+<div class="bar">Letting us know</div>
+<p>We have a dedicated bereavement team to support you. The quickest way to let us know is our online notification form.</p>
+<span class="bbtn">Notify us now</span></div></div>
+<div class="txt"><h3>2. Lead with empathy, then action</h3><p class="body-text" style="margin-top:6px">The last thing someone wants to deal with is banking formalities. So the page opens by acknowledging that this can feel overwhelming, and says plainly that we're here to help. Only then does it move into what to do, with the main action easy to find.</p></div>
+</div>
+
+<div class="row">
+<div class="browser"><div class="bbar"><i></i><i></i><i></i><span>bank.com/help/bereavement</span></div><div class="bnav"><b>Banking</b><span>Borrowing</span><span>Investing</span><span>Help</span></div><div class="bbody"><h4>Important steps</h4>
+<div class="bgrid three">
+<div class="bcard"><b>What to do when someone dies</b>Your first step is to register the death.</div>
+<div class="bcard"><b>Financial and emotional wellbeing</b>There's a lot to think about. We can help.</div>
+<div class="bcard"><b>FAQs and important documents</b>Common questions, plus a glossary.</div>
+</div></div></div>
+<div class="txt"><h3>3. Anticipate needs, tell people what to do</h3><p class="body-text" style="margin-top:6px">People are already stressed, so the copy covers their questions before they ask and says exactly what to do and how we can help. Labels are plain, steps are broken into easy-to-consume pieces, and a glossary means unfamiliar terms never become a barrier.</p></div>
+</div>
+
+<div class="row flip">
+<div class="browser"><div class="bbar"><i></i><i></i><i></i><span>bank.com/help/bereavement/support</span></div><div class="bnav"><b>Banking</b><span>Borrowing</span><span>Investing</span><span>Help</span></div><div class="bbody"><h4>Financial and emotional wellbeing</h4><p>Coping with bereavement can be challenging, and dealing with money isn't always straightforward.</p>
+<div class="bar">Support we can offer</div>
+<div class="bgrid">
+<div class="bcard"><b>Financial fitness</b>Feel confident about your finances.</div>
+<div class="bcard"><b>Money worries</b>Find the right solution with us.</div>
+</div></div></div>
+<div class="txt"><h3>4. Cover the whole picture</h3><p class="body-text" style="margin-top:6px">Some of what people need is unrelated to banking, such as arranging a funeral, locating a will or telling other organisations. I included it anyway. A page that only answered the bank's questions would leave people searching elsewhere at the worst time.</p></div>
+</div>
+</div></section>
+
+<section class="doc"><div class="wrap"><div class="section-num">Six</div><h2 class="head">Working within constraints</h2>
+<p class="lede">This project had firm limits, and they shaped the work as much as the creative choices did.</p>
+<table class="tbl">
+<tr><th>Constraint</th><th>How I worked with it</th></tr>
+<tr><td>Internal content style guide</td><td>Kept to its rules on language and format while adapting the tone for sensitivity</td></tr>
+<tr><td>Established brand voice</td><td>Used human, insightful and confident, and set wit aside</td></tr>
+<tr><td>Legal and financial accuracy</td><td>Kept wording precise on processes where vague language could mislead</td></tr>
+<tr><td>Shared delivery with design</td><td>Worked with designers so short blocks and clear headings carried part of the load</td></tr>
+</table></div></section>
+
+<section class="doc"><div class="wrap"><div class="section-num">Seven</div><h2 class="head">Results</h2>
+<p class="lede">The result was a single, structured bereavement resource on the bank's website.</p>
+<div class="impact-grid">
+<div class="impact-card"><div class="num">5 steps</div><div class="label">The process, explained in order</div><div class="sub">From registering a death to sorting accounts</div></div>
+<div class="impact-card"><div class="num">1 route</div><div class="label">Notification made easy to find</div><div class="sub">A clear route to the bereavement team from the opening page</div></div>
+<div class="impact-card"><div class="num">3 areas</div><div class="label">Support beyond the practical</div><div class="sub">What to do, financial and emotional wellbeing, and FAQs</div></div>
+</div>
+<p class="body-text" style="margin-top:26px">The page reassures people that they won't be doing this alone, and gives them everything they need to start.</p></div></section>
+
+<section class="doc"><div class="wrap"><div class="section-num">Eight</div><h2 class="head">What I'd carry forward</h2>
+<p class="lede">Three things I'd repeat on the next sensitive-content project.</p>
+<ul class="plain">
+<li>Treat brand voice as a range, not a fixed setting. Knowing what to dial down matters as much as knowing what to dial up.</li>
+<li>When readers are stressed, structure is part of the tone. Short steps and clear labels are a form of kindness.</li>
+<li>Completeness builds trust. Including information beyond the bank's own remit made the page more useful, and more human.</li>
+</ul>
+<p class="closing">Next, I'd test the page with people who have been through a bereavement, to refine wording and order around what they needed first.</p></div></section>
+</main>
+<footer><div class="wrap"><h3>Skills demonstrated</h3><div class="tags"><span class="tag">UX writing</span><span class="tag">Empathetic tone</span><span class="tag">Information architecture</span><span class="tag">Style guide adherence</span><span class="tag">Sensitive content</span><span class="tag">Design collaboration</span></div><p class="close-note">This is one of several case studies in my portfolio. Screens shown are illustrative mockups rather than the bank's actual website.</p></div></footer>
+</body>
+</html>
