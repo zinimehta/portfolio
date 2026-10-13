@@ -11,172 +11,325 @@
     <style>
       :root {
     --ink: #172b3a;
-    --muted: #526575;
+    --muted: #5b6b78;
     --accent: #167d83;
-    --paper: #f5f7f8;
+    --accent-dark: #10656a;
+    --paper: #f6f8f9;
     --card: #ffffff;
-    --line: #dce4e8;
-  }
+    --line: #e0e7eb;
+}
 
-  * {
+* {
     box-sizing: border-box;
-  }
+}
 
-  html {
+html {
     scroll-behavior: smooth;
-  }
+    scroll-padding-top: 24px;
+}
 
-  body {
+body {
     margin: 0;
     background: var(--paper);
     color: var(--ink);
     font-family: Inter, "Segoe UI", Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.7;
-  }
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
 
-  header, main, footer {
-    width: min(100% - 40px, 1000px);
+header,
+main,
+footer {
+    width: min(100% - 48px, 1040px);
     margin-inline: auto;
-  }
+}
 
-  header {
-    padding: 76px 0 48px;
+/* Hero section */
+
+header {
+    padding: 104px 0 76px;
     border-bottom: 1px solid var(--line);
-  }
+}
 
-  h1 {
+header h1 {
+    max-width: 800px;
+    margin: 0 0 22px;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 750;
+    line-height: 1.08;
+    letter-spacing: -0.055em;
+}
+
+header p {
     max-width: 760px;
     margin: 0 0 16px;
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
-    line-height: 1.12;
-    letter-spacing: -0.045em;
-  }
-
-  h2 {
-    margin: 0 0 20px;
-    font-size: 1.7rem;
-    line-height: 1.3;
-    letter-spacing: -0.025em;
-  }
-
-  h3 {
-    margin: 0 0 10px;
-    font-size: 1.15rem;
-    line-height: 1.4;
-  }
-
-  header p {
-    max-width: 720px;
     color: var(--muted);
-  }
+    font-size: 1.08rem;
+}
 
-  main {
-    padding: 44px 0;
-  }
+header p:nth-of-type(2) {
+    margin-top: 24px;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+}
 
-  section {
-    margin-bottom: 56px;
-  }
+/* Header links */
 
-  #about p {
-    max-width: 780px;
-    color: var(--muted);
-  }
-
-  #case-studies {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
-  }
-
-  #case-studies > h2 {
-    grid-column: 1 / -1;
-    margin-bottom: 0;
-  }
-
-  #case-studies article {
-    padding: 26px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-
-  #case-studies article:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
-  }
-
-  #case-studies article p {
-    margin: 0 0 22px;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }
-
-  a {
-    color: var(--accent);
-    font-weight: 600;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
-  }
-        .header-links {
+.header-links {
     display: flex;
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
-    margin-top: 28px;
+    margin-top: 30px !important;
 }
 
 .header-links a {
     display: inline-block;
-    padding: 10px 18px;
+    padding: 11px 20px;
     border: 1px solid var(--accent);
-    border-radius: 6px;
+    border-radius: 7px;
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 650;
     text-decoration: none;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
-.header-links a:hover {
+.header-links a:first-child {
     background: var(--accent);
     color: white;
 }
 
-  #case-studies article a {
-    margin-top: auto;
-  }
+.header-links a:hover {
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: white;
+    transform: translateY(-2px);
+}
 
-  #contact {
-    padding-top: 32px;
-    border-top: 1px solid var(--line);
-  }
+.header-links span {
+    display: none;
+}
 
-  footer {
-    padding: 24px 0 40px;
+/* Main content */
+
+main {
+    padding: 72px 0 48px;
+}
+
+section {
+    margin-bottom: 84px;
+}
+
+h2 {
+    margin: 0 0 28px;
+    font-size: clamp(1.7rem, 3vw, 2.15rem);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.035em;
+}
+
+h3 {
+    margin: 0 0 14px;
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: -0.015em;
+}
+
+/* About section */
+
+#about p {
+    max-width: 790px;
+    margin: 0 0 18px;
     color: var(--muted);
-    font-size: 0.875rem;
-  }
+    font-size: 1rem;
+}
 
-  @media (max-width: 640px) {
-    header, main, footer {
-      width: min(100% - 32px, 1000px);
+/* Case study grid */
+
+#case-studies {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+#case-studies > h2 {
+    grid-column: 1 / -1;
+    margin-bottom: 8px;
+}
+
+#case-studies article {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 245px;
+    padding: 30px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(23, 43, 58, 0.025);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+#case-studies article:hover {
+    border-color: #a9cfd0;
+    box-shadow: 0 10px 28px rgba(23, 43, 58, 0.07);
+    transform: translateY(-3px);
+}
+
+#case-studies article h3 {
+    font-size: 1.12rem;
+}
+
+#case-studies article p {
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.75;
+}
+
+#case-studies article a {
+    margin-top: auto;
+    color: var(--accent);
+    font-size: 0.94rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+#case-studies article a::after {
+    content: "  →";
+    transition: margin-left 0.2s;
+}
+
+#case-studies article a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+#case-studies article a:hover::after {
+    margin-left: 4px;
+}
+
+/* General links */
+
+a {
+    text-underline-offset: 4px;
+}
+
+/* Contact section */
+
+#contact {
+    margin-bottom: 36px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+}
+
+#contact p {
+    max-width: 720px;
+    color: var(--muted);
+}
+
+#contact a {
+    color: var(--accent);
+    font-weight: 650;
+    text-decoration: none;
+}
+
+#contact a:hover {
+    color: var(--accent-dark);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* Footer */
+
+footer {
+    padding: 24px 0 36px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Keyboard accessibility */
+
+a:focus-visible {
+    outline: 3px solid #8bc9ca;
+    outline-offset: 4px;
+    border-radius: 3px;
+}
+
+/* Mobile layout */
+
+@media (max-width: 680px) {
+    header,
+    main,
+    footer {
+        width: min(100% - 32px, 1040px);
     }
 
     header {
-      padding-top: 48px;
+        padding: 64px 0 48px;
+    }
+
+    header h1 {
+        font-size: clamp(2.35rem, 10vw, 3.4rem);
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    header p:nth-of-type(2) {
+        font-size: 0.88rem;
+        line-height: 1.9;
+    }
+
+    main {
+        padding-top: 48px;
+    }
+
+    section {
+        margin-bottom: 60px;
     }
 
     #case-studies {
-      grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     #case-studies article {
-      padding: 22px;
+        min-height: 0;
+        padding: 24px;
     }
-  }
+
+    h2 {
+        margin-bottom: 22px;
+    }
+
+    #contact {
+        padding-top: 30px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
     </style>
 </head>
 
