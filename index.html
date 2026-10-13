@@ -550,6 +550,102 @@ a {
         font-size: clamp(2.5rem, 10vw, 3.5rem);
     }
 }
+        /* Refined case study cards */
+
+#case-studies {
+    gap: 20px;
+    margin-top: 24px;
+}
+
+#case-studies > h2 {
+    margin-bottom: 8px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+}
+
+#case-studies article {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 280px;
+    padding: 30px;
+    gap: 12px;
+
+    background: #ffffff;
+    border: 1px solid #dedbd3;
+    border-radius: 4px;
+    box-shadow: none;
+
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+#case-studies article:hover {
+    border-color: #b7955b;
+    transform: translateY(-3px);
+}
+
+#case-studies article h3 {
+    margin: 0;
+    color: #263746;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+}
+
+#case-studies article p:not(.project-tag) {
+    margin: 0 0 18px;
+    color: #687681;
+    font-size: 0.95rem;
+    line-height: 1.75;
+}
+
+#case-studies article .project-tag {
+    margin: 0 0 4px;
+    color: #9b7843;
+    font-size: 0.7rem;
+    font-weight: 750;
+    letter-spacing: 0.09em;
+    line-height: 1.5;
+    text-transform: uppercase;
+}
+
+#case-studies article a {
+    margin-top: auto;
+    padding-top: 8px;
+    color: #9b7843;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+#case-studies article a::after {
+    content: " →";
+}
+
+#case-studies article a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+    #case-studies {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    #case-studies article {
+        min-height: 0;
+        padding: 24px;
+    }
+
+    #case-studies article h3 {
+        font-size: 1.3rem;
+    }
+}
     </style>
 </head>
 
@@ -565,7 +661,7 @@ a {
     </h1>
 
     <p class="hero-description">
-        I'm Zini Mehta, a Knowledge Management and Governance
+        Hello! I'm Zini, a Knowledge Management and Governance
         leader working at the intersection of AI, information architecture, and regulated operations.
     </p>
 
@@ -585,11 +681,10 @@ a {
   <h2>About Me</h2>
 
   <p>
-    My career began in journalism, where I learned to uncover the story in complex information and make it meaningful to an audience. Advertising taught me how to shape narratives to influence perception. Moving into UX and content design shifted my focus to how people interact with information and how content can make their experiences simpler and more intuitive.</p>
+    My career began in journalism, where I learned to uncover the story in complex information and make it meaningful to an audience. Advertising taught me how to shape narratives to influence perception. Moving into UX shifted my focus to how people interact with information and how content can make their experiences simpler and more intuitive.</p>
 
   <p>
-    Over 13+ years, I've brought these perspectives together across global organisations, working with diverse audiences, business contexts, and levels of complexity. Today, at Coinbase, I apply this experience to Knowledge Management and AI-enabled systems, building the content architecture, governance frameworks, and operational processes that make information reliable, accessible, and useful at scale.
-  </p>
+    Over 13+ years, I've brought these perspectives together across global organisations, working with diverse audiences, business contexts, and levels of complexity. At Coinbase, I apply this experience to Knowledge Management and AI-enabled systems, building the content architecture, governance frameworks, and operational processes that make information reliable and accessible. </p>
 
   <p>
     I believe effective Knowledge Management goes beyond
@@ -599,7 +694,7 @@ a {
   </p>
 </section>
         <section id="experience">
-    <h2>Career Timeline</h2>
+    <h2>Career Journey</h2>
 
     <div class="timeline">
 
