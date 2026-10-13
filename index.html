@@ -429,6 +429,127 @@ a:focus-visible {
         animation-duration: 0.01ms !important;
     }
 }
+        /* Homepage refinements */
+
+header {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 52px;
+}
+
+main {
+    padding-top: 0;
+}
+
+#about {
+    padding-top: 44px;
+}
+        /* Editorial visual style */
+
+:root {
+    --ink: #263746;
+    --muted: #687681;
+    --accent: #b7955b;
+    --paper: #f6f4ef;
+    --card: #ffffff;
+    --line: #dedbd3;
+}
+
+/* Dark editorial hero */
+
+header {
+    width: 100%;
+    margin: 0;
+    padding: 76px max(24px, calc((100% - 1000px) / 2)) 64px;
+    background: #263746;
+    color: #f6f4ef;
+}
+
+header h1 {
+    max-width: 850px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+}
+
+header .eyebrow {
+    color: #d1b17a;
+}
+
+header .hero-description {
+    max-width: 720px;
+    color: #e0e3e4;
+    font-size: 1.05rem;
+}
+
+header .header-links a {
+    display: inline-block;
+    margin-right: 12px;
+    padding: 12px 18px;
+    border: 1px solid #b7955b;
+    border-radius: 4px;
+    color: #f6f4ef;
+    text-decoration: none;
+}
+
+header .header-links a:first-child {
+    background: #b7955b;
+    color: #263746;
+}
+
+header .header-links a:hover {
+    opacity: 0.85;
+}
+
+/* Editorial section headings */
+
+body {
+    background: var(--paper);
+}
+
+main {
+    padding-bottom: 48px;
+}
+
+h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 500;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+}
+
+#about p {
+    color: #4e5b65;
+    max-width: 800px;
+}
+
+/* Refined case study cards */
+
+#case-studies article {
+    border-radius: 4px;
+    border-color: var(--line);
+    box-shadow: none;
+}
+
+.project-tag {
+    color: #9b7843;
+}
+
+a {
+    color: #9b7843;
+}
+
+@media (max-width: 640px) {
+    header {
+        padding: 56px 24px 44px;
+    }
+
+    header h1 {
+        font-size: clamp(2.5rem, 10vw, 3.5rem);
+    }
+}
     </style>
 </head>
 
@@ -440,7 +561,7 @@ a:focus-visible {
     </p>
 
     <h1>
-        I build knowledge systems that people and AI can trust
+        I build the systems that make knowledge work
     </h1>
 
     <p class="hero-description">
@@ -478,7 +599,7 @@ a:focus-visible {
   </p>
 </section>
         <section id="experience">
-    <h2>Career Journey</h2>
+    <h2>Career Timeline</h2>
 
     <div class="timeline">
 
